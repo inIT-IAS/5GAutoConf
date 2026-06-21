@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gnbautoconf"
+version = "0.3.0"
+dependencies = [
+  "coverage",
+  "matplotlib",
+  "numpy",
+  "pandas",
+  "pytest",
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Niels Hendrik Fliedner", email = "niels.fliedner@th-owl.de"}
+]
+maintainers = [
+  {name = "Niels Hendrik Fliedner", email = "niels.fliedner@th-owl.de"}
+]
+description = "5GAutoConf: A Rapid Data-Driven Autoconfiguration Tool for 5G Base Stations."
+readme = "README.md"
+license = "MPL-2.0"
+license-files = ["LICENSE", "AUTHORS.md"]
+keywords = ["5g", "gnb", "configuration", "software-defined radio", "openairinterface5G"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Framework :: Pytest",
+  "Intended Audience :: Science/Research",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
+  "Programming Language :: Python :: 3.16",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+dev = [
+  "readme-coverage-badger",
+  ]
+dist = [
+  "build",
+  "wheel",
+]
+
+[project.urls]
+Repository = "https://github.com/inIT-IAS/5GAutoConf.git"
+
+[project.scripts]
+gnbautoconf = "run:main"
+
+[tool.setuptools]
+py-modules = ["logging_config", "run", "test"]
+packages = ["configurator", "scripts"]
+include-package-data = true
+zip-safe = false

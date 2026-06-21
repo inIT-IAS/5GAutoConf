@@ -1,0 +1,38 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 5GAutoConf
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file. Cite the conference paper when referring to the scientific method, algorithm, or research contribution. Cite the software DOI corresponding to the exact version used in your work. When appropriate, cite both.
+type: software
+authors:
+  - given-names: Niels Hendrik
+    family-names: Fliedner
+    email: niels.fliedner@th-owl.de
+    affiliation: inIT - Institute Industrial IT, OWL University of Applied Sciences, Lemgo, Germany
+    orcid: 'https://orcid.org/0000-0003-0484-1328'
+identifiers:
+  - type: doi
+    value: 10.1109/DCOSS-IoT_CONFERENCE_DOI
+    description: Conference paper DOI
+  - type: doi
+    value: 10.5281/zenodo.ZENODO_CONCEPT_DOI
+    description: Zenodo concept DOI
+  - type: doi
+    value: 10.5281/zenodo.ZENODO_VERSION_DOI
+    description: Zenodo version DOI
+repository-code: 'https://github.com/inIT-IAS/5GAutoConf'
+abstract: >-
+  A Rapid Data-Driven Autoconfiguration Tool for 5G Base
+  Stations.
+keywords:
+  - 5G
+  - gNB
+  - Configuration
+  - Software-Defined Radio
+  - OpenAirInterface5G
+license: MPL-2.0
+version: 0.3.0
+date-released: '2026-06-22'

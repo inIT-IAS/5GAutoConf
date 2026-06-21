@@ -1,0 +1,13 @@
+recursive-include configurator *
+recursive-include plots *
+recursive-include scripts *
+recursive-include tables *
+recursive-include testfiles *
+include AUTHORS.md
+include CITATION.cff
+include LICENSE
+include Makefile
+include pyproject.toml
+include pytest.ini
+include README.md
+include static_settings.json
