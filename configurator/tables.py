@@ -98,13 +98,12 @@ def ts_38_300_table_5_1_1(mu: int, col: str):
     Caption: Supported transmission numerologies.
     Refers to ts_dicts.TS_38_300_TABLE_5_1_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Numerology µ
-    - 1 : Δf = 2^mu * 15 [kHz]
-    - 2 : Cyclic prefix ("Normal" or "Normal, Extended")
-    - 3 : Support for Data (PDSCH, PUSCH, etc)
-    - 4 : Support for Synch (PSS, SSS, PBCH)
+    :3GPP Table Columns:
+        * 0 : Numerology µ
+        * 1 : Δf = 2^mu * 15 [kHz]
+        * 2 : Cyclic prefix ("Normal" or "Normal, Extended")
+        * 3 : Support for Data (PDSCH, PUSCH, etc)
+        * 4 : Support for Synch (PSS, SSS, PBCH)
 
     Parameters
     ----------
@@ -251,8 +250,7 @@ def ts_38_213_table_8_1_2(preamble_scs_hz: int):
     Caption: N_gap values for different preamble SCS mu.
     Refers to TS_38_213_TABLE_8_1_2.
 
-    3GPP Table Columns
-    ------------------
+    :3GPP Table Columns:
 
     Parameters
     ----------
@@ -363,14 +361,13 @@ def ts_38_211_table_6_3_3_1_1(prach_preamble_format: str):
     Caption: PRACH preamble formats for L_RA = 839 and Delta f_RA in {1.25, 5} kHz.
     Refers to TS_38_211_TABLE_6_3_3_1_1.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : Format
-    - 2 : L_RA
-    - 3 : Delta f_RA
-    - 4 : N_u
-    - 5 : N_CP^RA
-    - 6 : Support for restricted sets
+    :3GPP Table Columns:
+        * 1 : Format
+        * 2 : L_RA
+        * 3 : Delta f_RA
+        * 4 : N_u
+        * 5 : N_CP^RA
+        * 6 : Support for restricted sets
 
     Parameters
     ----------
@@ -403,16 +400,15 @@ def ts_38_211_table_6_3_3_1_2(prach_preamble_format: str):
     Caption: Preamble formats for L_RA in {139,571,1151} and Delta f_RA = 15 x 2^mu kHz where mu in {0,1,2,3,5,6} kHz.
     Refers to TS_38_211_TABLE_6_3_3_1_2.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : Format
-    - 2 : L_RA for mu in {0,1,2,3,5,6}
-    - 3 : L_RA for mu in {0,3}
-    - 4 : L_RA for mu in {1,3,5}
-    - 5 : Delta f_RA
-    - 6 : N_u
-    - 7 : N_CP^RA
-    - 8 : Support for restricted sets
+    :3GPP Table Columns:
+        * 1 : Format
+        * 2 : L_RA for mu in {0,1,2,3,5,6}
+        * 3 : L_RA for mu in {0,3}
+        * 4 : L_RA for mu in {1,3,5}
+        * 5 : Delta f_RA
+        * 6 : N_u
+        * 7 : N_CP^RA
+        * 8 : Support for restricted sets
 
     Parameters
     ----------
@@ -445,12 +441,11 @@ def ts_38_211_table_6_3_3_1_5(zero_correlation_zone_config: int):
     Caption: N_CS for preamble formats with Δf_RA = 1.25 kHz.
     Refers to TS_38_211_TABLE_6_3_3_1_5.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
-    - 1 : N_CS value for N_CS value for Unrestricted set
-    - 2 : N_CS value for Restricted set type A
-    - 3 : N_CS value for Restricted set type B
+    :3GPP Table Columns:
+        * 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
+        * 1 : N_CS value for N_CS value for Unrestricted set
+        * 2 : N_CS value for Restricted set type A
+        * 3 : N_CS value for Restricted set type B
 
     Parameters
     ----------
@@ -483,12 +478,11 @@ def ts_38_211_table_6_3_3_1_6(zero_correlation_zone_config: int):
     Caption: N_CS for preamble formats with Δf_RA = 5 kHz.
     Refers to TS_38_211_TABLE_6_3_3_1_6.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
-    - 1 : N_CS value for N_CS value for Unrestricted set
-    - 2 : N_CS value for Restricted set type A
-    - 3 : N_CS value for Restricted set type B
+    :3GPP Table Columns:
+        * 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
+        * 1 : N_CS value for N_CS value for Unrestricted set
+        * 2 : N_CS value for Restricted set type A
+        * 3 : N_CS value for Restricted set type B
 
     Parameters
     ----------
@@ -521,12 +515,11 @@ def ts_38_211_table_6_3_3_1_7(zero_correlation_zone_config: int):
     Caption: N_CS for preamble formats with L_RA in {139,571,1151}.
     Refers to TS_38_211_TABLE_6_3_3_1_7.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
-    - 1 : N_CS value for L_RA = 139
-    - 2 : N_CS value for L_RA = 571
-    - 3 : N_CS value for L_RA = 1151
+    :3GPP Table Columns:
+        * 0 : zeroCorrelationZoneConfig,msgA-ZeroCorrelationZoneConfig
+        * 1 : N_CS value for L_RA = 139
+        * 2 : N_CS value for L_RA = 571
+        * 3 : N_CS value for L_RA = 1151
 
     Parameters
     ----------
@@ -559,19 +552,19 @@ def ts_38_211_table_6_3_3_2_4(prach_conf_idx: int):
     Caption: Random access configurations for FR2 and unpaired spectrum.
     Refers to TS_38_211_TABLE_6_3_3_2_4.
 
-    NOTE: "Unpaired" refers to TDD settings.
+    .. note::
+        "Unpaired" refers to TDD settings.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : PRACH Configuration Index
-    - 2 : Preamble format, ["A1", "A2", "A3", "B1", "B4", "C0", "C2", "A1/B1", "A2/B2", "A3/B3"].
-    - 3 : x (used in n_f mod x = y)
-    - 4 : y (used in n_f mod x = y)
-    - 5 : Slot number
-    - 6 : Starting symbol
-    - 7 : Number of PRACH slots within a 60 kHz slot
-    - 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
-    - 9 : N_dur^RA, PRACH duration
+    :3GPP Table Columns:
+        * 1 : PRACH Configuration Index
+        * 2 : Preamble format, ["A1", "A2", "A3", "B1", "B4", "C0", "C2", "A1/B1", "A2/B2", "A3/B3"].
+        * 3 : x (used in n_f mod x = y)
+        * 4 : y (used in n_f mod x = y)
+        * 5 : Slot number
+        * 6 : Starting symbol
+        * 7 : Number of PRACH slots within a 60 kHz slot
+        * 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
+        * 9 : N_dur^RA, PRACH duration
 
     Parameters
     ----------
@@ -604,31 +597,31 @@ def ts_38_211_table_6_3_3_2_3(prach_conf_idx: int):
     Caption: Random access configurations for FR1 and unpaired spectrum.
     Refers to TS_38_211_TABLE_6_3_3_2_3.
 
-    NOTE: "Unpaired" refers to TDD settings.
+    .. note::
+        "Unpaired" refers to TDD settings.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : PRACH Configuration Index
-    - 2 : Preamble format, [0, 1, 2, 3, "A1", "A2", "A3", "B1", "B4", "C0", "C2", "A1/B1", "A2/B2", "A3/B3"].
-    - 3 : x (used in n_f mod x = y)
-    - 4 : y (used in n_f mod x = y)
-    - 5 : Subframe number
-    - 6 : Starting symbol
-    - 7 : Number of PRACH slots within a subframe
-    - 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
-    - 9 : N_dur^RA, PRACH duration
+    :3GPP Table Columns:
+        * 1 : PRACH Configuration Index
+        * 2 : Preamble format, [0, 1, 2, 3, "A1", "A2", "A3", "B1", "B4", "C0", "C2", "A1/B1", "A2/B2", "A3/B3"].
+        * 3 : x (used in n_f mod x = y)
+        * 4 : y (used in n_f mod x = y)
+        * 5 : Subframe number
+        * 6 : Starting symbol
+        * 7 : Number of PRACH slots within a subframe
+        * 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
+        * 9 : N_dur^RA, PRACH duration
 
     Example Config
     --------------
-    - PRACH Configuration Index : 98
-    - Preamble format : A2
-    - x (used in n_f mod x = y) : 2
-    - y (used in n_f mod x = y) : 1
-    - Subframe number : 9
-    - Starting symbol : 0
-    - Number of PRACH slots within a subframe : 1
-    - N_t^RS,slot, number of time-domain PRACH occasions within a PRACH slot : 3
-    - N_dur^RA, PRACH duration : 4
+        * PRACH Configuration Index : 98
+        * Preamble format : A2
+        * x (used in n_f mod x = y) : 2
+        * y (used in n_f mod x = y) : 1
+        * Subframe number : 9
+        * Starting symbol : 0
+        * Number of PRACH slots within a subframe : 1
+        * N_t^RS,slot, number of time-domain PRACH occasions within a PRACH slot : 3
+        * N_dur^RA, PRACH duration : 4
 
     Parameters
     ----------
@@ -661,19 +654,19 @@ def ts_38_211_table_6_3_3_2_2(prach_conf_idx: int):
     Caption: Random access configurations for FR1 and paired spectrum/supplementary uplink.
     Refers to TS_38_211_TABLE_6_3_3_2_2.
 
-    NOTE: "Paired" refers to FDD settings, "supplementary uplink" refers to SUL.
+    .. note::
+        "Paired" refers to FDD settings, "supplementary uplink" refers to SUL.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : PRACH Configuration Index
-    - 2 : Preamble format, [0, 1, 2, 3, "A1", "A1/B1", "A2", "A2/B2", "A3", "A3/B3", "B1", "B4", "C0", "C2"].
-    - 3 : x (used in n_f mod x = y)
-    - 4 : y (used in n_f mod x = y)
-    - 5 : Subframe number
-    - 6 : Starting symbol
-    - 7 : Number of PRACH slots within a subframe
-    - 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
-    - 9 : N_dur^RA, PRACH duration
+    :3GPP Table Columns:
+        * 1 : PRACH Configuration Index
+        * 2 : Preamble format, [0, 1, 2, 3, "A1", "A1/B1", "A2", "A2/B2", "A3", "A3/B3", "B1", "B4", "C0", "C2"].
+        * 3 : x (used in n_f mod x = y)
+        * 4 : y (used in n_f mod x = y)
+        * 5 : Subframe number
+        * 6 : Starting symbol
+        * 7 : Number of PRACH slots within a subframe
+        * 8 : N_t^RA,slot, number of time-domain PRACH occasions within a PRACH slot
+        * 9 : N_dur^RA, PRACH duration
 
     Parameters
     ----------
@@ -706,13 +699,12 @@ def ts_38_211_table_6_3_3_2_1(l_ra: int, delta_f_ra_khz: float, delta_f_khz: flo
     Caption: Supported combinations of Δf_RA and Δf, and the corresponding value of k.
     Refers to TS_38_211_TABLE_6_3_3_2_1.
 
-    3GPP Table Columns
-    ------------------
-    - 1 : int : L_RA
-    - 2 : float : Δf_RA for PRACH
-    - 3 : float : Δf for PUSCH
-    - 4 : int : N_RB^RA, allocation expressed in number of RBs for PUSCH
-    - 5 : int : k
+    :3GPP Table Columns:
+        * 1 : int : L_RA
+        * 2 : float : Δf_RA for PRACH
+        * 3 : float : Δf for PUSCH
+        * 4 : int : N_RB^RA, allocation expressed in number of RBs for PUSCH
+        * 5 : int : k
 
     Parameters
     ----------
@@ -771,12 +763,11 @@ def ts_38_211_table_4_3_2_2(mu: int, col: str):
     Caption: Number of OFDM symbols per slot, slots per frame, and slots per subframe for extended cyclic prefix.
     Refers to TS_38_211_TABLE_4_3_2_2.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Numerology µ
-    - 1 : Number of OFDM symbols per slot = 14 (constant)
-    - 2 : Number of slots per radio frame
-    - 3 : Number of slots per subframe
+    :3GPP Table Columns:
+        * 0 : Numerology µ
+        * 1 : Number of OFDM symbols per slot = 14 (constant)
+        * 2 : Number of slots per radio frame
+        * 3 : Number of slots per subframe
 
     Parameters
     ----------
@@ -787,7 +778,6 @@ def ts_38_211_table_4_3_2_2(mu: int, col: str):
 
     Returns
     -------
-
     int
         The number of OFDM symbols per slot = 14 (constant).
         If col = "N symbols per slot".
@@ -828,12 +818,11 @@ def ts_38_211_table_4_3_2_1(mu: int, col: str):
     Caption: Number of OFDM symbols per slot, slots per frame, and slots per subframe for normal cyclic prefix.
     Refers to TS_38_211_TABLE_4_3_2_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Numerology µ
-    - 1 : Number of OFDM symbols per slot = 14 (constant)
-    - 2 : Number of slots per radio frame
-    - 3 : Number of slots per subframe
+    :3GPP Table Columns:
+        * 0 : Numerology µ
+        * 1 : Number of OFDM symbols per slot = 14 (constant)
+        * 2 : Number of slots per radio frame
+        * 3 : Number of slots per subframe
 
     Parameters
     ----------
@@ -889,12 +878,11 @@ def ts_38_104_table_5_4_3_3_1(freq_band: str):
     Caption: Applicable SS raster entries per operating band (FR1) for above 3 MHz channel bandwidth.
     Refers to TS_38_104_TABLE_5_4_3_3_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : NR operating band
-    - 1 : SS Block SCS
-    - 2 : SS Block pattern (Note 1)
-    - 3 : Range of GSCN (First - <Step size> - Last)
+    :3GPP Table Columns:
+        * 0 : NR operating band
+        * 1 : SS Block SCS
+        * 2 : SS Block pattern (Note 1)
+        * 3 : Range of GSCN (First - <Step size> - Last)
 
     Parameters
     ----------
@@ -927,18 +915,18 @@ def ts_38_104_table_5_4_3_3_2(freq_band: str):
     Caption: Applicable SS raster entries per operating band (FR2).
     Refers to TS_38_104_TABLE_5_4_3_3_2.
 
-    Note 1: SS Block pattern is defined in section 4.1 in TS 38.213.
+    Notes
+    -----
+    * SS Block pattern is defined in section 4.1 in TS 38.213.
         Applies to column "SS Block pattern".
-
-    Note 2: SS Block SCS of 960 kHz is not used for initial access.
+    * SS Block SCS of 960 kHz is not used for initial access.
         Applies to n263 with SCS 960 kHz.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : NR operating band
-    - 1 : SS Block SCS
-    - 2 : SS Block pattern (Note 1)
-    - 3 : Range of GSCN (First - <Step size> - Last)
+    :3GPP Table Columns:
+        * 0 : NR operating band
+        * 1 : SS Block SCS
+        * 2 : SS Block pattern (Note 1)
+        * 3 : Range of GSCN (First - <Step size> - Last)
 
     Parameters
     ----------
@@ -971,10 +959,9 @@ def ts_38_104_table_5_4_3_3_3(scs_hz: int):
     Caption: Allowed GSCN for operation in band n263 for 120 kHz and 480 kHz
     Refers to TS_38_104_TABLE_5_4_3_3_3.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SS Block SCS
-    - 1 : Range of GSCN
+    :3GPP Table Columns:
+        * 0 : SS Block SCS
+        * 1 : Range of GSCN
 
     Parameters
     ----------
@@ -1007,18 +994,19 @@ def ts_38_104_table_5_4_3_3_4(freq_band: int):
     Caption: Applicable SS raster entries per operating band (FR1) for 3 MHz channel bandwidth
     Refers to TS_38_104_TABLE_5_4_3_3_4.
 
-    Note 1: SS Block pattern is defined in clause 4.1 in TS 38.213.
+    .. note:: **Note 1**
+        SS Block pattern is defined in clause 4.1 in TS 38.213.
         Applies to column "SS Block pattern".
 
-    Note 2: Only applicable for 12 PRB transmission bandwidth configuration within 3 MHz channel with punctured PBCH defined in TS 38.211 clause 7.4.3.1.
+    .. note:: **Note 2**
+        Only applicable for 12 PRB transmission bandwidth configuration within 3 MHz channel with punctured PBCH defined in TS 38.211 clause 7.4.3.1.
         Applies to third GSCN setting for n100: 41637.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : NR operating band
-    - 1 : SS Block SCS
-    - 2 : SS Block pattern (Note 1)
-    - 3 : Range of GSCN (First - <Step size> - Last)
+    :3GPP Table Columns:
+        * 0 : NR operating band
+        * 1 : SS Block SCS
+        * 2 : SS Block pattern (Note 1)
+        * 3 : Range of GSCN (First - <Step size> - Last)
 
     Parameters
     ----------
@@ -1051,16 +1039,16 @@ def ts_38_104_table_b_5_2_1(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR1, 15 kHz SCS
     Refers to TS_38_104_TABLE_B_5_2_1.
 
-    Note: These percentages are informative and apply to a slot's symbols 1 to 6 and 8 to 13. Symbols
-    0 and 7 have a longer CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to a slot's symbols 1 to 6 and 8 to 13. Symbols
+        0 and 7 have a longer CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length for symbols 1-6 and 8-13 in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length for symbols 1-6 and 8-13 (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length for symbols 1-6 and 8-13 in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length for symbols 1-6 and 8-13 (Note) (%)
 
     Parameters
     ----------
@@ -1101,16 +1089,16 @@ def ts_38_104_table_b_5_2_2(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR1, 30 kHz SCS
     Refers to TS_38_104_TABLE_B_5_2_2.
 
-    Note: These percentages are informative and apply to a slot's symbols 1 through 13. Symbol 0 has
-    a longer CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to a slot's symbols 1 through 13. Symbol 0 has
+        a longer CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length for symbols 1-13 in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length for symbols 1-13 (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length for symbols 1-13 in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length for symbols 1-13 (Note) (%)
 
     Parameters
     ----------
@@ -1151,17 +1139,17 @@ def ts_38_104_table_b_5_2_3(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR1, 60 kHz SCS
     Refers to TS_38_104_TABLE_B_5_2_3.
 
-    Note: These percentages are informative and apply to all OFDM symbols within subframe except
-    for symbol 0 of slot 0 and slot 2. Symbol 0 of slot 0 and slot 2 may have a longer CP and
-    therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to all OFDM symbols within subframe except
+        for symbol 0 of slot 0 and slot 2. Symbol 0 of slot 0 and slot 2 may have a longer CP and
+        therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1202,16 +1190,16 @@ def ts_38_104_table_b_5_2_4(channel_bw_hz: int):
     Caption: EVM window length for extended CP, FR1, 60 kHz SCS
     Refers to TS_38_104_TABLE_B_5_2_4.
 
-    Note: These percentages are informative.
-    The number of CP samples excluded from the EVM window is the same as for normal CP length.
+    .. note::
+        These percentages are informative.
+        The number of CP samples excluded from the EVM window is the same as for normal CP length.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1252,17 +1240,17 @@ def ts_38_104_table_c_5_2_1(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR2, 60 kHz SCS
     Refers to TS_38_104_TABLE_C_5_2_1.
 
-    Note: These percentages are informative and apply to all OFDM symbols within subframe
-    except for symbol 0 of slot 0 and slot 2. Symbol 0 of slot 0 and slot 2 may have a longer
-    CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to all OFDM symbols within subframe
+        except for symbol 0 of slot 0 and slot 2. Symbol 0 of slot 0 and slot 2 may have a longer
+        CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1304,17 +1292,17 @@ def ts_38_104_table_c_5_2_2(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR2, 120 kHz SCS
     Refers to TS_38_104_TABLE_C_5_2_2.
 
-    Note: These percentages are informative and apply to all OFDM symbols within subframe
-    except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
-    CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to all OFDM symbols within subframe
+        except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
+        CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1355,17 +1343,17 @@ def ts_38_104_table_c_5_2_2a(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR2-2, 480 kHz SCS
     Refers to TS_38_104_TABLE_C_5_2_2A.
 
-    Note: These percentages are informative and apply to all OFDM symbols within subframe
-    except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
-    CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to all OFDM symbols within subframe
+        except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
+        CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1406,17 +1394,17 @@ def ts_38_104_table_c_5_2_2b(channel_bw_hz: int):
     Caption: EVM window length for normal CP, FR2-2, 960 kHz SCS
     Refers to TS_38_104_TABLE_C_5_2_2B.
 
-    Note: These percentages are informative and apply to all OFDM symbols within subframe
-    except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
-    CP and therefore a lower percentage.
+    .. note::
+        These percentages are informative and apply to all OFDM symbols within subframe
+        except for symbol 0 of slot 0 and slot 4. Symbol 0 of slot 0 and slot 4 may have a longer
+        CP and therefore a lower percentage.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1457,15 +1445,15 @@ def ts_38_104_table_c_5_2_3(channel_bw_hz: int):
     Caption: EVM window length for extended CP, FR2, 60 kHz SCS
     Refers to TS_38_104_TABLE_C_5_2_3.
 
-    Note: These percentages are informative.
+    .. note::
+        These percentages are informative.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Channel bandwidth (MHz)
-    - 1 : FFT size
-    - 2 : CP length in FFT samples
-    - 3 : EVM window length W
-    - 4 : Ratio of W to total CP length (Note) (%)
+    :3GPP Table Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size
+        * 2 : CP length in FFT samples
+        * 3 : EVM window length W
+        * 4 : Ratio of W to total CP length (Note) (%)
 
     Parameters
     ----------
@@ -1510,10 +1498,9 @@ def ts_38_101_1_table_5_1_1(freq_range: str):
     Caption: Definition of frequency ranges.
     Refers to TS_38_101_1_TABLE_5_1_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Frequency range designation
-    - 1 : Corresponding frequency range
+    :3GPP Table Columns:
+        * 0 : Frequency range designation
+        * 1 : Corresponding frequency range
 
     Parameters
     ----------
@@ -1548,12 +1535,11 @@ def ts_38_101_1_table_5_2_1(freq_band: int, col: str):
     Caption: NR operating bands in FR1.
     Refers to TS_38_101_1_TABLE_5_2_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : NR operating band
-    - 1 : Uplink (UL) operating band BS receive / UE transmit F_UL_low - F_UL_high
-    - 2 : Downlink (DL) operating band BS transmit / UE receive F_DL_low - F_DL_high
-    - 3 : Duplex Mode
+    :3GPP Table Columns:
+        * 0 : NR operating band
+        * 1 : Uplink (UL) operating band BS receive / UE transmit F_UL_low - F_UL_high
+        * 2 : Downlink (DL) operating band BS transmit / UE receive F_DL_low - F_DL_high
+        * 3 : Duplex Mode
 
     Parameters
     ----------
@@ -1606,26 +1592,25 @@ def ts_38_101_1_table_5_3_2_1(channel_bw_hz: int, scs_hz: int):
     Caption: Maximum transmission bandwidth configuration N_RB.
     Refers to TS_38_101_1_TABLE_5_3_2_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SCS (kHz)
-    - 1 : 3 MHz (N_RB)
-    - 2 : 5 MHz (N_RB)
-    - 3 : 7 MHz (N_RB)
-    - 4 : 10 MHz (N_RB)
-    - 5 : 15 MHz (N_RB)
-    - 6 : 20 MHz (N_RB)
-    - 7 : 25 MHz (N_RB)
-    - 8 : 30 MHz (N_RB)
-    - 9 : 35 MHz (N_RB)
-    - 10 : 40 MHz (N_RB)
-    - 11 : 45 MHz (N_RB)
-    - 12 : 50 MHz (N_RB)
-    - 13 : 60 MHz (N_RB)
-    - 14 : 70 MHz (N_RB)
-    - 15 : 80 MHz (N_RB)
-    - 16 : 90 MHz (N_RB)
-    - 17 : 100 MHz (N_RB)
+    :3GPP Table Columns:
+        * 0 : SCS (kHz)
+        * 1 : 3 MHz (N_RB)
+        * 2 : 5 MHz (N_RB)
+        * 3 : 7 MHz (N_RB)
+        * 4 : 10 MHz (N_RB)
+        * 5 : 15 MHz (N_RB)
+        * 6 : 20 MHz (N_RB)
+        * 7 : 25 MHz (N_RB)
+        * 8 : 30 MHz (N_RB)
+        * 9 : 35 MHz (N_RB)
+        * 10 : 40 MHz (N_RB)
+        * 11 : 45 MHz (N_RB)
+        * 12 : 50 MHz (N_RB)
+        * 13 : 60 MHz (N_RB)
+        * 14 : 70 MHz (N_RB)
+        * 15 : 80 MHz (N_RB)
+        * 16 : 90 MHz (N_RB)
+        * 17 : 100 MHz (N_RB)
 
     Parameters
     ----------
@@ -1673,26 +1658,25 @@ def ts_38_101_1_table_5_3_3_1(channel_bw_hz: int, scs_hz: int):
     Caption: Minimum guardband for each UE channel bandwidth and SCS (kHz).
     Refers to TS_38_101_1_TABLE_5_3_3_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SCS (kHz)
-    - 1 : 3 MHz
-    - 2 : 5 MHz
-    - 3 : 7 MHz
-    - 4 : 10 MHz
-    - 5 : 15 MHz
-    - 6 : 20 MHz
-    - 7 : 25 MHz
-    - 8 : 30 MHz
-    - 9 : 35 MHz
-    - 10 : 40 MHz
-    - 11 : 45 MHz
-    - 12 : 50 MHz
-    - 13 : 60 MHz
-    - 14 : 70 MHz
-    - 15 : 80 MHz
-    - 16 : 90 MHz
-    - 17 : 100 MHz
+    :3GPP Table Columns:
+        * 0 : SCS (kHz)
+        * 1 : 3 MHz
+        * 2 : 5 MHz
+        * 3 : 7 MHz
+        * 4 : 10 MHz
+        * 5 : 15 MHz
+        * 6 : 20 MHz
+        * 7 : 25 MHz
+        * 8 : 30 MHz
+        * 9 : 35 MHz
+        * 10 : 40 MHz
+        * 11 : 45 MHz
+        * 12 : 50 MHz
+        * 13 : 60 MHz
+        * 14 : 70 MHz
+        * 15 : 80 MHz
+        * 16 : 90 MHz
+        * 17 : 100 MHz
 
     Parameters
     ----------
@@ -1740,27 +1724,26 @@ def ts_38_101_1_table_5_3_5_1(freq_band: int):
     Caption: Channel bandwidths for each NR band.
     Refers to TS_38_101_1_TABLE_5_3_5_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : NR Band
-    - 1 : SCS (kHz)
-    - 2 : 3 (UE Channel bandwidth (MHz))
-    - 3 : 5 (UE Channel bandwidth (MHz))
-    - 4 : 7 (UE Channel bandwidth (MHz))
-    - 5 : 10 (UE Channel bandwidth (MHz))
-    - 6 : 15 (UE Channel bandwidth (MHz))
-    - 7 : 20 (UE Channel bandwidth (MHz))
-    - 8 : 25 (UE Channel bandwidth (MHz))
-    - 9 : 30 (UE Channel bandwidth (MHz))
-    - 10 : 35 (UE Channel bandwidth (MHz))
-    - 11 : 40 (UE Channel bandwidth (MHz))
-    - 12 : 45 (UE Channel bandwidth (MHz))
-    - 13 : 50 (UE Channel bandwidth (MHz))
-    - 14 : 60 (UE Channel bandwidth (MHz))
-    - 15 : 70 (UE Channel bandwidth (MHz))
-    - 16 : 80 (UE Channel bandwidth (MHz))
-    - 17 : 90 (UE Channel bandwidth (MHz))
-    - 18 : 100 (UE Channel bandwidth (MHz))
+    :3GPP Table Columns:
+        * 0 : NR Band
+        * 1 : SCS (kHz)
+        * 2 : 3 (UE Channel bandwidth (MHz))
+        * 3 : 5 (UE Channel bandwidth (MHz))
+        * 4 : 7 (UE Channel bandwidth (MHz))
+        * 5 : 10 (UE Channel bandwidth (MHz))
+        * 6 : 15 (UE Channel bandwidth (MHz))
+        * 7 : 20 (UE Channel bandwidth (MHz))
+        * 8 : 25 (UE Channel bandwidth (MHz))
+        * 9 : 30 (UE Channel bandwidth (MHz))
+        * 10 : 35 (UE Channel bandwidth (MHz))
+        * 11 : 40 (UE Channel bandwidth (MHz))
+        * 12 : 45 (UE Channel bandwidth (MHz))
+        * 13 : 50 (UE Channel bandwidth (MHz))
+        * 14 : 60 (UE Channel bandwidth (MHz))
+        * 15 : 70 (UE Channel bandwidth (MHz))
+        * 16 : 80 (UE Channel bandwidth (MHz))
+        * 17 : 90 (UE Channel bandwidth (MHz))
+        * 18 : 100 (UE Channel bandwidth (MHz))
 
     Parameters
     ----------
@@ -1797,12 +1780,11 @@ def ts_38_101_2_table_5_2_1(freq_band: int, col: str):
     Caption: NR operating bands in FR2.
     Refers to TS_38_101_2_TABLE_5_2_1.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Operating band
-    - 1 : Uplink (UL) operating band BS receive / UE transmit F_UL_low - F_UL_high
-    - 2 : Downlink (DL) operating band BS transmit / UE receive F_DL_low - F_DL_high
-    - 3 : Duplex Mode
+    :3GPP Table Columns:
+        * 0 : Operating band
+        * 1 : Uplink (UL) operating band BS receive / UE transmit F_UL_low - F_UL_high
+        * 2 : Downlink (DL) operating band BS transmit / UE receive F_DL_low - F_DL_high
+        * 3 : Duplex Mode
 
     Parameters
     ----------
@@ -1853,18 +1835,18 @@ def ts_38_101_2_table_5_3_2_1(channel_bw_hz: int, scs_hz: int):
     Caption: Maximum transmission bandwidth configuration N_RB.
     Refers to TS_38_101_2_TABLE_5_3_2_1.
 
-    NOTE: SCS 480 and 960 are optional in release 19.3.0 of the specification.
+    .. note::
+        SCS 480 and 960 are optional in release 19.3.0 of the specification.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SCS (kHz)
-    - 1 : 50 MHz (N_RB)
-    - 2 : 100 MHz (N_RB)
-    - 3 : 200 MHz (N_RB)
-    - 4 : 400 MHz (N_RB)
-    - 5 : 800 MHz (N_RB)
-    - 6 : 1600 MHz (N_RB)
-    - 7 : 2000 MHz (N_RB)
+    :3GPP Table Columns:
+        * 0 : SCS (kHz)
+        * 1 : 50 MHz (N_RB)
+        * 2 : 100 MHz (N_RB)
+        * 3 : 200 MHz (N_RB)
+        * 4 : 400 MHz (N_RB)
+        * 5 : 800 MHz (N_RB)
+        * 6 : 1600 MHz (N_RB)
+        * 7 : 2000 MHz (N_RB)
 
     Parameters
     ----------
@@ -1912,20 +1894,20 @@ def ts_38_101_2_table_5_3_3_1(channel_bw_hz: int, scs_hz: int):
     Caption: Minimum guardband for each UE channel bandwidth and SCS (kHz).
     Refers to TS_38_101_2_TABLE_5_3_3_1.
 
-    NOTE: The minimum guardbands have been calculated using the following equation:
+    .. note::
+        The minimum guardbands have been calculated using the following equation:
         GB_Channel = (BW_Channel x 1000 (kHz) - N_RB x SCS x 12) / 2 - SCS/2,
         where N_RB are from Table 5.3.2-1 and GB_Channel expressed in kHz.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SCS (kHz)
-    - 1 : 50 MHz
-    - 2 : 100 MHz
-    - 3 : 200 MHz
-    - 4 : 400 MHz
-    - 5 : 800 MHz
-    - 6 : 1600 MHz
-    - 7 : 2000 MHz
+    :3GPP Table Columns:
+        * 0 : SCS (kHz)
+        * 1 : 50 MHz
+        * 2 : 100 MHz
+        * 3 : 200 MHz
+        * 4 : 400 MHz
+        * 5 : 800 MHz
+        * 6 : 1600 MHz
+        * 7 : 2000 MHz
 
     Parameters
     ----------
@@ -1973,18 +1955,18 @@ def ts_38_101_2_table_5_3_3_2(channel_bw_hz: int, scs_hz: int):
     Caption: Minimum guardband (kHz) of SCS 240 kHz SS/PBCH block in FR2-1.
     Refers to TS_38_101_2_TABLE_5_3_3_2.
 
-    NOTE: In FR2-1, the minimum guardband in Table 5.3.3-2 is applicable
+    .. note::
+        In FR2-1, the minimum guardband in Table 5.3.3-2 is applicable
         only when the SCS 240 kHz SS/PBCH block is received adjacent to
         the edge of the UE channel bandwidth which the SS/PBCH block is
         located.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : SCS (kHz)
-    - 1 : 50 MHz
-    - 2 : 100 MHz
-    - 3 : 200 MHz
-    - 4 : 400 MHz
+    :3GPP Table Columns:
+        * 0 : SCS (kHz)
+        * 1 : 50 MHz
+        * 2 : 100 MHz
+        * 3 : 200 MHz
+        * 4 : 400 MHz
 
     Parameters
     ----------
@@ -2032,21 +2014,22 @@ def ts_38_101_2_table_5_3_5_1(freq_band: int):
     Caption: Channel bandwidths for each NR band.
     Refers to TS_38_101_2_TABLE_5_3_5_1.
 
-    NOTE 1: This UE channel bandwidth is optional in this release of the specification.
+    .. note:: 1
+        This UE channel bandwidth is optional in this release of the specification.
 
-    NOTE 2: This SCS is optional in this release of the specification.
+    .. note:: 2
+        This SCS is optional in this release of the specification.
 
-    3GPP Table Columns
-    ------------------
-    - 0 : Operating Band
-    - 1 : SCS (kHz)
-    - 2 : 50 (UE Channel bandwidth (MHz))
-    - 3 : 100 (UE Channel bandwidth (MHz))
-    - 4 : 200 (UE Channel bandwidth (MHz))
-    - 5 : 400 (UE Channel bandwidth (MHz))
-    - 6 : 800 (UE Channel bandwidth (MHz))
-    - 7 : 1600 (UE Channel bandwidth (MHz))
-    - 8 : 200 (UE Channel bandwidth (MHz))
+    :3GPP Table Columns:
+        * 0 : Operating Band
+        * 1 : SCS (kHz)
+        * 2 : 50 (UE Channel bandwidth (MHz))
+        * 3 : 100 (UE Channel bandwidth (MHz))
+        * 4 : 200 (UE Channel bandwidth (MHz))
+        * 5 : 400 (UE Channel bandwidth (MHz))
+        * 6 : 800 (UE Channel bandwidth (MHz))
+        * 7 : 1600 (UE Channel bandwidth (MHz))
+        * 8 : 2000 (UE Channel bandwidth (MHz))
 
     Parameters
     ----------

@@ -1039,8 +1039,8 @@ def create_prach_occasions_absolute_occupied_symbols(freq_range: str, duplex_mod
     """Create absolute starting symbols, PRACH duration, and absolute occupied symbols of the PRACH occasions.
     The absolute starting symbols are offset with regards to column "subframe number", interpreted from 15 kHz raster.
 
-    TS 38.211 ch. 5.3.2.:
-    - For Δf_RA in {1.25, 5} kHz, µ=0 shall be assumed (3GPP TS 38.211 ch. 5.3.2).
+    .. note::
+        For Δf_RA in {1.25, 5} kHz, µ=0 shall be assumed (3GPP TS 38.211 ch. 5.3.2).
 
     Parameters
     ----------

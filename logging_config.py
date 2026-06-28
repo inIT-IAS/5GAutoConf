@@ -9,15 +9,14 @@
 
 """Set up the logger.
 
-Usage
------
+.. code-block::
+    :caption: Usage:
 
-import logging
-logger = logging.getLogger(__name__)
+        import logging
+        logger = logging.getLogger(__name__)
 
 Raises
 ------
-
 RuntimeError
     If this script is called directly or trying to access the main() function.
 
@@ -26,14 +25,14 @@ import logging
 
 
 def setup_logging(loglevel=logging.INFO, logfile="5GAutoConf.log"):
-    """_summary_
+    """Set up the logging configuration with a global loglevel and logfile.
 
     Parameters
     ----------
-    loglevel : _type_, optional
-        _description_, by default logging.INFO
-    logfile : str, optional
-        _description_, by default "5GAutoConf.log"
+    loglevel : int
+        The loglevel.
+    logfile : str
+        The logfile.
 
     """
     logging.basicConfig(

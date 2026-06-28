@@ -9,5 +9,5 @@
 Create valid configurations for 5G Base Stations.
 """
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 __all__ = ["ts_dicts", "generator", "tables", "tools"]

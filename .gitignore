@@ -283,8 +283,12 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks,visualstudiocode,windows,linux,macos,notepadpp
 
+site/
+html/
 5g_config.json
 *.conf
 *.results.txt
 tables/*
 plots/*
+docs/api/*
+docs/_build*

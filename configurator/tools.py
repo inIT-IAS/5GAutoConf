@@ -22,6 +22,8 @@ from operator import itemgetter
 import logging
 import bisect
 
+from types import MappingProxyType
+
 from . import tables
 
 logger = logging.getLogger(__name__)
@@ -399,6 +401,10 @@ DL_UL_TRANSMISSION_PERIODICITY_MS = {
 # PRACH Preamble Formats
 
 PRACH_PREAMBLE_FORMATS = ["0", "1", "2", "3", "A1", "A2", "A3", "B1", "B2", "B3", "B4", "C0", "C2", "A1/B1", "A2/B2", "A3/B3"]
+
+# Ignore pattern for ts_dicts
+
+IGNORE = (None, None)
 
 
 def compute_nr_riv_from_rbs(rb_start: int, l_rbs: int):
@@ -849,7 +855,9 @@ def get_table_row_from_frequency(frequency_hz: int):
 
 def get_table_row_from_arfcn(arfcn: int):
     """Get the row in 3GPP TS 38.104 Table 5.4.2.1-1 based on the NR-ARFCN.
-    NOTE: The row numbering starts at 0.
+
+    .. note::
+        The row numbering starts at 0.
 
     Parameters
     ----------
@@ -885,11 +893,17 @@ def get_table_row_from_arfcn(arfcn: int):
     return table_row
 
 
-def get_prach_configuration_index_from_parameters(freq_range: str, duplex_mode: str, preamble_format: str, x_snf: int, y_snf: int | list, subframe_number: int | list, starting_symbol: int, n_slot_ra: int | None, n_t_ra_slot: int | None, n_dur_ra: int):
-    """Get the PRACH configuration index given by 3GPP TS 38.211 Tables 6.3.3.2-2 to 6.3.3.2-4 from matching all remaining parameters, used as column headers.
+def get_prach_configuration_index_from_parameters(freq_range: str, duplex_mode: str, preamble_format: str, x_sfn: int, y_sfn: int | list, subframe_number: int | list, starting_symbol: int, n_slot_ra: int | None, n_t_ra_slot: int | None, n_dur_ra: int):
+    """Get the PRACH configuration index given by 3GPP TS 38.211 Tables 6.3.3.2-2 to 6.3.3.2-4 from matching the given parameters, used as column headers.
     The specific table is chosen by frequency range and duplex mode.
 
-    The system frame number choice mask `n_f mod x = y` indicates which frames have a RACH occasion.
+    The system frame number (SFN) choice mask `n_f mod x = y` indicates which frames have a RACH occasion.
+
+    If more than one PRACH configuration index is matching the given parameters, the first matching entry is chosen arbitrarily.
+
+    Notes
+    -----
+    - Tables 6.3.3.2-2 to 6.3.3.2-4 do not have separate `B2` and `B3` entries, so they are replaced by `A2/B2` and `A3/B3`, respectively.
 
     Parameters
     ----------
@@ -899,19 +913,20 @@ def get_prach_configuration_index_from_parameters(freq_range: str, duplex_mode: 
     duplex_mode : str
         The duplex mode, either FDD or TDD.
 
-    preamble_format : str
+    preamble_format : str | None
         The PRACH preamble format.
 
-    x_snf : int
-        The divisor for the SNF choice mask `n_f mod x = y`.
+    x_sfn : int | None
+        The divisor for the SFN choice mask `n_f mod x = y`.
 
-    y_snf : int | list
-        The remainder for the SNF choice mask `n_f mod x = y`.
+    y_sfn : int | list | None
+        The remainder for the SFN choice mask `n_f mod x = y`.
 
-    subframe_number : int | list
+    subframe_number : int | list | None
         The subframe number in a frame containing the RACH occasions.
+        For FR2 and TDD, this is actually the slot number.
 
-    starting_symbol : int
+    starting_symbol : int | None
         The starting symbol in the given PRACH slot.
 
     n_slot_ra : int | None
@@ -922,7 +937,7 @@ def get_prach_configuration_index_from_parameters(freq_range: str, duplex_mode: 
         The number of time-domain PRACH occasions within a PRACH slot.
         Entries are None, if not defined in the table.
 
-    n_dur_ra : int
+    n_dur_ra : int | None
         The overall PRACH duration, given in number of symbols of the chosen Δf_RA grid.
 
     Returns
@@ -938,46 +953,57 @@ def get_prach_configuration_index_from_parameters(freq_range: str, duplex_mode: 
     """
     from . import ts_dicts
 
+    if preamble_format == "B2":
+        preamble_format = "A2/B2"
+    if preamble_format == "B3":
+        preamble_format = "A3/B3"
+
     if freq_range == "FR1" and duplex_mode == "FDD":
         prach_conf_dict = ts_dicts.TS_38_211_TABLE_6_3_3_2_2
         match_params = {
             "Preamble format": (preamble_format, None),
-            "x": (x_snf, None),
-            "y": (y_snf, None),
+            "x": (x_sfn, None),
+            "y": (y_sfn, None),
             "Subframe number": (subframe_number, None),
             "Starting symbol": (starting_symbol, None),
             "Number of PRACH slots within a subframe": (n_slot_ra, None),
             "Number of time-domain PRACH occasions within a PRACH slot": (n_t_ra_slot, None),
             "PRACH duration": (n_dur_ra, None),
         }
+        logger.debug("Using 3GPP TS 38.211 Table 6.3.3.2-2")
     elif freq_range == "FR1" and duplex_mode == "TDD":
         prach_conf_dict = ts_dicts.TS_38_211_TABLE_6_3_3_2_3
         match_params = {
             "Preamble format": (preamble_format, None),
-            "x": (x_snf, None),
-            "y": (y_snf, None),
+            "x": (x_sfn, None),
+            "y": (y_sfn, None),
             "Subframe number": (subframe_number, None),
             "Starting symbol": (starting_symbol, None),
             "Number of PRACH slots within a subframe": (n_slot_ra, None),
             "Number of time-domain PRACH occasions within a PRACH slot": (n_t_ra_slot, None),
             "PRACH duration": (n_dur_ra, None),
         }
+        logger.debug("Using 3GPP TS 38.211 Table 6.3.3.2-3")
     elif freq_range == "FR2" and duplex_mode == "TDD":
         prach_conf_dict = ts_dicts.TS_38_211_TABLE_6_3_3_2_4
         match_params = {
             "Preamble format": (preamble_format, None),
-            "x": (x_snf, None),
-            "y": (y_snf, None),
+            "x": (x_sfn, None),
+            "y": (y_sfn, None),
             "Slot number": (subframe_number, None),
             "Starting symbol": (starting_symbol, None),
             "Number of PRACH slots within a 60 kHz slot": (n_slot_ra, None),
             "Number of time-domain PRACH occasions within a PRACH slot": (n_t_ra_slot, None),
             "PRACH duration": (n_dur_ra, None),
         }
+        logger.debug("Using 3GPP TS 38.211 Table 6.3.3.2-4")
     else:
         raise ValueError("The combination of freq_range {0} and duplex_mode {1} is not supported!".format(freq_range, duplex_mode))
 
-    return [key for key, value in prach_conf_dict.items() if value == match_params]
+    return find_keys(
+        prach_conf_dict,
+        **match_params
+    )
 
 
 def compute_n_slot_ra(n_prach_slots: int, delta_f_ra_hz: int):
@@ -1164,16 +1190,15 @@ def compute_rach_occasion_starting_symbols(prach_conf_idx: int, freq_range: str,
         - For L_RA = 839, N_t^RA,slot=1 is fixed (3GPP TS 38.211 ch. 5.3.2). Code: `n_t_ra_slot`
         - For Δf_RA in {1.25, 5, 15, 60} kHz, n_slot_RA=0 is fixed 3GPP TS 38.211 ch. 5.3.2), so the column entry is not needed and set to 0 to distinguish it from 1 and 2, which are the only other possible column entries. Code: `n_slot_ra`
 
-    Example
-    -------
-    prach_conf_idx=98, freq_range="FR1", duplex_mode="TDD", delta_f_ra_hz=30000:
-        l_0:            0
-        n_t_ra_slot:    3
-        n_dur_ra:       4
-        n_prach_slots:  1
-        n_slot_ra:      (1,)
-        n_t_ra:         (0, 1, 2)
-        l:              (14, 18, 22)
+    :Example:
+        * prach_conf_idx=98, freq_range="FR1", duplex_mode="TDD", delta_f_ra_hz=30000:
+            * l_0:            0
+            * n_t_ra_slot:    3
+            * n_dur_ra:       4
+            * n_prach_slots:  1
+            * n_slot_ra:      (1,)
+            * n_t_ra:         (0, 1, 2)
+            * l:              (14, 18, 22)
 
     Parameters
     ----------
@@ -1298,25 +1323,27 @@ def compute_rach_occasion_starting_symbols(prach_conf_idx: int, freq_range: str,
 def compute_all_t_cp_ra_dict():
     """Compute all PRACH cyclic prefix durations t_CP^RA in seconds based on 3GPP TS 38.211 Table 6.3.3.1-1 and 6.3.3.1-2.
 
-    Output dictionary pattern:
-    {
-        t_cp_ra_s: {
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "N_CP,pre^RA": n_cp_pre_ra
-            },
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "N_CP,pre^RA": n_cp_pre_ra
+    .. code-block::
+        :caption: Output dictionary pattern:
+
+        {
+            t_cp_ra_s: {
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "N_CP,pre^RA": n_cp_pre_ra
+                },
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "N_CP,pre^RA": n_cp_pre_ra
+                }
             }
         }
-    }
 
-    Variables:
-    - t_cp_ra_s: The PRACH cyclic prefix duration T_CP^RA in seconds
-    - prach_preamble_format: The PRACH preamble format
-    - delta_f_ra_hz: The PRACH subcarrier spacing Δf_RA in hertz
-    - n_cp_pre_ra: The prefix N_CP,pre^RA of the cyclic prefix duration N_CP^RA
+    :Variables:
+        * t_cp_ra_s: The PRACH cyclic prefix duration T_CP^RA in seconds
+        * prach_preamble_format: The PRACH preamble format
+        * delta_f_ra_hz: The PRACH subcarrier spacing Δf_RA in hertz
+        * n_cp_pre_ra: The prefix N_CP,pre^RA of the cyclic prefix duration N_CP^RA
 
     Returns
     -------
@@ -1370,28 +1397,30 @@ def compute_all_t_cp_ra_dict():
 def compute_all_t_gt_ra_dict():
     """Compute all PRACH guard time durations T_GT^RA in seconds based on 3GPP TS 38.211 Tables 6.3.3.1-1, 6.3.3.1-2, 6.3.3.2-2, 6.3.3.2-3, and 6.3.3.2-4.
 
-    Output dictionary pattern:
-    {
-        t_gt_ra: {
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "RACH occasion duration": t_dur_ra,
-                "PRACH preamble duration": t_n_cp_ra
-            },
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "RACH occasion duration": t_dur_ra,
-                "PRACH preamble duration": t_n_cp_ra
+    .. code-block::
+        :caption: Output dictionary pattern:
+
+        {
+            t_gt_ra: {
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "RACH occasion duration": t_dur_ra,
+                    "PRACH preamble duration": t_n_cp_ra
+                },
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "RACH occasion duration": t_dur_ra,
+                    "PRACH preamble duration": t_n_cp_ra
+                }
             }
         }
-    }
 
-    Variables:
-    - t_gt_ra: The PRACH guard time duration T_GT^RA in seconds
-    - prach_preamble_format: The PRACH preamble format
-    - delta_f_ra_hz: The PRACH subcarrier spacing Δf_RA in hertz
-    - t_dur_ra: The RACH occasion duration, based on 3GPP TS 38.211 Tables 6.3.3.2-2 to 6.3.3.2-4
-    - t_n_cp_ra: The PRACH preamble duration N_u + N_CP^RA, based on 3GPP TS 38.211 Tables 6.3.3.1-1 to 6.3.3.1-2
+    :Variables:
+        * t_gt_ra: The PRACH guard time duration T_GT^RA in seconds
+        * prach_preamble_format: The PRACH preamble format
+        * delta_f_ra_hz: The PRACH subcarrier spacing Δf_RA in hertz
+        * t_dur_ra: The RACH occasion duration, based on 3GPP TS 38.211 Tables 6.3.3.2-2 to 6.3.3.2-4
+        * t_n_cp_ra: The PRACH preamble duration N_u + N_CP^RA, based on 3GPP TS 38.211 Tables 6.3.3.1-1 to 6.3.3.1-2
 
     Returns
     -------
@@ -1460,24 +1489,28 @@ def compute_applicable_t_cp_ra_dict(t_c_min_s: float, tau_d_max_s: float):
     """Compute combinations of applicable PRACH cyclic prefix durations t_CP^RA.
     This results in a subset of compute_all_t_cp_ra_dict, containing all applicable t_CP^RA with their assigned PRACH preamble formats, Δf_RA, and N_CP,pre^RA.
 
-    The lower boundary t_CP,min^RA is defined by the maximum delay spread tau_d,max:
-        t_CP,min^RA >= tau_d,max
-    The upper boundary t_CP,max^RA is defined by the minimum channel coherence time T_C,min:
-        t_CP,max^RA <= T_C,min
+    .. note::
+        The lower boundary t_CP,min^RA is defined by the maximum delay spread tau_d,max:
+            ``t_CP,min^RA >= tau_d,max``
 
-    Output dictionary pattern:
-    {
-        t_cp_ra_s: {
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "N_CP,pre^RA": n_cp_pre_ra
-            },
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "N_CP,pre^RA": n_cp_pre_ra
+        The upper boundary t_CP,max^RA is defined by the minimum channel coherence time T_C,min:
+            ``t_CP,max^RA <= T_C,min``
+
+    .. code-block::
+        :caption: Output dictionary pattern:
+
+        {
+            t_cp_ra_s: {
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "N_CP,pre^RA": n_cp_pre_ra
+                },
+                prach_preamble_format: {
+                    "Delta f_RA": delta_f_ra_hz,
+                    "N_CP,pre^RA": n_cp_pre_ra
+                }
             }
         }
-    }
 
     Parameters
     ----------
@@ -1499,13 +1532,15 @@ def compute_applicable_t_cp_ra_dict(t_c_min_s: float, tau_d_max_s: float):
     if t_cp_ra_s_lst_sorted_bisect_right > 0:
         t_cp_max_ra = t_cp_ra_s_lst_sorted[t_cp_ra_s_lst_sorted_bisect_right - 1]
     else:
-        t_cp_max_ra = None  # no value <= t_c_min_s exists
+        # no value for t_cp_max_ra <= t_c_min_s exists. This means, that no Cyclic Prefix duration shorter than the channel coherence time could be found
+        raise ValueError("No cyclic prefix duration shorter than the minimum channel coherence time of {0} µs could be found!".format(t_c_min_s * 1_000_000))
 
     t_cp_ra_s_lst_sorted_bisect_left = bisect.bisect_left(t_cp_ra_s_lst_sorted, tau_d_max_s)
     if t_cp_ra_s_lst_sorted_bisect_left < len(t_cp_ra_s_lst_sorted):
         t_cp_min_ra = t_cp_ra_s_lst_sorted[t_cp_ra_s_lst_sorted_bisect_left]
     else:
-        t_cp_min_ra = None  # no value >= tau_d_max_s exists
+        # no value for t_cp_min_ra >= tau_d_max_s exists. This means, that no Cyclic Prefix duration larger than the maximum delay spread could be found
+        raise ValueError("No cyclic prefix duration larger than the maximum delay spread of {0} µs could be found!".format(tau_d_max_s * 1_000_000))
 
     t_cp_ra_s_lst_sorted_subset = [x for x in t_cp_ra_s_lst_sorted if t_cp_min_ra <= x <= t_cp_max_ra]
 
@@ -1518,30 +1553,39 @@ def compute_applicable_t_gt_ra_dict(t_rt_max_s: float):
     """Compute combinations of applicable PRACH guard time durations t_GT^RA.
     This results in a subset of compute_all_t_gt_ra_dict, containing all applicable t_CP^RA with their assigned PRACH preamble formats, Δf_RA, RACH occasion duration, and PRACH preamble duration.
 
-    The lower boundary t_GT,min^RA is defined by the maximum round-trip time t_RT,max:
-        t_GT,min^RA >= t_RT,max
-    Currently, no upper boundary is defined.
+    .. note::
+        The lower boundary t_GT,min^RA is defined by the maximum round-trip time t_RT,max:
+            ``t_GT,min^RA >= t_RT,max``
 
-    Output dictionary pattern:
-    {
-        t_gt_ra: {
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "RACH occasion duration": t_dur_ra,
-                "PRACH preamble duration": t_n_cp_ra
-            },
-            prach_preamble_format: {
-                "Delta f_RA": delta_f_ra_hz,
-                "RACH occasion duration": t_dur_ra,
-                "PRACH preamble duration": t_n_cp_ra
+        Currently, no upper boundary is defined.
+
+    .. code-block::
+        :caption: Output dictionary pattern:
+
+            {
+                t_gt_ra: {
+                    prach_preamble_format: {
+                        "Delta f_RA": delta_f_ra_hz,
+                        "RACH occasion duration": t_dur_ra,
+                        "PRACH preamble duration": t_n_cp_ra
+                    },
+                    prach_preamble_format: {
+                        "Delta f_RA": delta_f_ra_hz,
+                        "RACH occasion duration": t_dur_ra,
+                        "PRACH preamble duration": t_n_cp_ra
+                    }
+                }
             }
-        }
-    }
 
     Parameters
     ----------
     t_rt_max_s : float
         The maximum round-trip time in seconds due to cell radius r_cell.
+
+    Raises
+    ------
+    ValueError
+        If no guard time larger than the round-trip delay could be found.
 
     Returns
     -------
@@ -1556,7 +1600,8 @@ def compute_applicable_t_gt_ra_dict(t_rt_max_s: float):
     if t_gt_ra_s_lst_sorted_bisect_left < len(t_gt_ra_s_lst_sorted):
         t_gt_min_ra = t_gt_ra_s_lst_sorted[t_gt_ra_s_lst_sorted_bisect_left]
     else:
-        t_gt_min_ra = None  # no value >= t_rt_max_s exists
+        # no value for t_gt_min_ra >= t_rt_max_s exists. This means, that no Guard Time larger than the round-trip delay could be found
+        raise ValueError("No guard time longer larger the round-trip delay of {0} µs could be found!".format(t_rt_max_s * 1_000_000))
 
     t_gt_ra_s_lst_sorted_subset = [x for x in t_gt_ra_s_lst_sorted if x >= t_gt_min_ra]
 
@@ -1571,14 +1616,14 @@ def filter_prach_dict(input_dict: dict, match_set: set):
     Parameters
     ----------
     input_dict : dict
-        _description_
+        The input dictionary.
     match_set : set
-        _description_
+        The dictionary to match.
 
     Returns
     -------
     filtered_dict : dict
-        _description_
+        The filtered dictionary.
     """
     filtered_dict = {}
 
@@ -1603,12 +1648,12 @@ def extract_ordered_pairs_prach_tuple(input_dict: dict):
     Parameters
     ----------
     input_dict : dict
-        _description_
+        The input dictionary.
 
     Returns
     -------
     ordered_pairs_prach_tuple: tuple
-        _description_
+        The ordered pairs of matching values.
     """
     ordered_pairs_prach_tuple = tuple(
         (k2, level3["Delta f_RA"])
@@ -1621,21 +1666,21 @@ def extract_ordered_pairs_prach_tuple(input_dict: dict):
 def balanced_min_max_rank(tuple1: tuple, tuple2: tuple):
     """Create ranked minimum and maximum entries matching between two tuples.
     Favors tuple1 for the maximum and tuple2 for the minimum, if the lowest or highest matching entries of both tuples are symmetrically cross-placed:
-    tuple1 = ((1,2),(3,4),(5,6),(7,8))
-    tuple2 = ((3,4),(1,2),(7,8),(5,6))
-    result = ((3,4),(7,8))
+    * ``tuple1 = ((1,2),(3,4),(5,6),(7,8))``
+    * ``tuple2 = ((3,4),(1,2),(7,8),(5,6))``
+    * ``result = ((3,4),(7,8))``
 
     Parameters
     ----------
     tuple1 : tuple
-        _description_
+        The first input tuple.
     tuple2 : tuple
-        _description_
+        The second input tuple.
 
     Returns
     -------
     (min_item, max_item): tuple
-        _description_
+        The minimum and maximum item in a tuple.
     """
     pos1 = {v: i for i, v in enumerate(tuple1)}
     pos2 = {v: i for i, v in enumerate(tuple2)}
@@ -1886,15 +1931,14 @@ def compute_ssb_time_domain_transmission_pattern(case: str, nr_channel_center_fr
     """Compute the OFDM starting symbols of the candidate SSBs according to 3GPP TS 38.213 4.1.
     This is the time domain transmission pattern for the SSBs.
 
-    Cases
-    -----
-    - Case A: 15 kHz, s = s_params + 14*n = {2, 8} + 14*n
-    - Case B: 30 kHz, s = s_params + 14*n = {4, 8, 16, 20} + 28*n
-    - Case C: 30 kHz, s = s_params + 14*n = {2, 8} + 14*n
-    - Case D: 120 kHz, s = s_params + 14*n = {4, 8, 16, 20} + 28*n
-    - Case E: 240 kHz, s = s_params + 14*n = {8, 12, 16, 20, 32, 36, 40, 44} + 56*n
-    - Case F: 480 kHz, s = s_params + 14*n = {2, 9} + 14*n
-    - Case G: 960 kHz, s = s_params + 14*n = {2, 9} + 14*n
+    :Cases:
+        * Case A: 15 kHz, s = s_params + 14*n = {2, 8} + 14*n
+        * Case B: 30 kHz, s = s_params + 14*n = {4, 8, 16, 20} + 28*n
+        * Case C: 30 kHz, s = s_params + 14*n = {2, 8} + 14*n
+        * Case D: 120 kHz, s = s_params + 14*n = {4, 8, 16, 20} + 28*n
+        * Case E: 240 kHz, s = s_params + 14*n = {8, 12, 16, 20, 32, 36, 40, 44} + 56*n
+        * Case F: 480 kHz, s = s_params + 14*n = {2, 9} + 14*n
+        * Case G: 960 kHz, s = s_params + 14*n = {2, 9} + 14*n
 
     Parameters
     ----------
@@ -2079,7 +2123,8 @@ def get_ssb_case(freq_band: int, scs_hz: int):
     In that case, this function refers to TS_38_104_TABLE_5_4_3_3_1.
     The other tables are not used, since they do not contain Case B or C.
 
-    NOTE: This function does not check, if the given combination of Frequency Band, Subcarrier Spacing, and Channel Bandwidth is valid.
+    .. note::
+        This function does *not* check if the given combination of Frequency Band, Subcarrier Spacing, and Channel Bandwidth is valid.
 
     Parameters
     ----------
@@ -2128,10 +2173,11 @@ def compute_ul_dl_symbols_per_frame(mu_ref: int, slot_configuration_period_ms: f
     """Compute the Uplink, Downlink and Flexible symbols per NR Radio Frame.
     This is based on the slot configuration according to 3GPP TS 38.213 ch. 11.1, which is also known as pattern1.
 
-    The configuration has the following pattern:
+    .. code-block::
+        :caption: The configuration has the following pattern:
 
-    | DL Slots | DL Symbols & Flexible Symbols | Flexible Slots | Flexible Symbols & Uplink Symbols | Uplink Slots |
-    |<-------------------------------------- dl-UL-TransmissionPeriodicity --------------------------------------->|
+        | DL Slots | DL Symbols & Flexible Symbols | Flexible Slots | Flexible Symbols & Uplink Symbols | Uplink Slots |
+        |<-------------------------------------- dl-UL-TransmissionPeriodicity --------------------------------------->|
 
     If dl-UL-TransmissionPeriodicity is not equal to 10 ms (the Frame duration), then the pattern is repeatet until 10 ms are reached.
 
@@ -2410,22 +2456,31 @@ def compute_pusch_rbs_occupied_by_prach(nr_freq_range: str, nr_duplex_mode: str,
 def compute_pusch_ofdm_symbols_occupied_by_rach_occasions(nr_freq_range: str, nr_duplex_mode: str, prach_conf_idx: int, delta_f_ra_hz: int, delta_f_hz: int):
     """Compute the number PUSCH OFDM Symbols occupied by consecutive RACH occasion (RO).
 
-    Steps
-    -----
-    1. Get PRACH SCS.
-    2. Get PRACH Preamble Format using compute_prach_preamble_format().
-    3. Get RO Configuration (Feed PRACH Preamble Format into tables.ts_38_211_table_6_3_3_1_1 - 2).
-    4. Get PRACH Cyclic Prefix Duration (N_CP^RA * T_C) from Step 3.
-    5. Get PRACH ZC Sequence Duration (N_u * T_C) from Step 3.
-    6. Get N_dur^RA from PRACH configuration index and others into tables.ts_38_211_table_6_3_3_2_2 - 4.
-    7. Get t_symb (OFDM symbol duration based on PRACH SCS).
-    8. Get single RO Duration (N_dur^RA * t_symb).
-    9. Get RO absolute Occasions using compute_rach_occasion_starting_symbols().
-    10. Check overlap with PUSCH symbols (with separate PUSCH SCS) for each RO absolute Occasion.
-    11. Create dictionary containing a tuple of occupied PUSCH OFDM symbols (values) for each RO (keys).
+    :Steps:
+        1. Get PRACH SCS.
+        2. Get PRACH Preamble Format using compute_prach_preamble_format().
+        3. Get RO Configuration (Feed PRACH Preamble Format into tables.ts_38_211_table_6_3_3_1_1 - 2).
+        4. Get PRACH Cyclic Prefix Duration (N_CP^RA * T_C) from Step 3.
+        5. Get PRACH ZC Sequence Duration (N_u * T_C) from Step 3.
+        6. Get N_dur^RA from PRACH configuration index and others into tables.ts_38_211_table_6_3_3_2_2 - 4.
+        7. Get t_symb (OFDM symbol duration based on PRACH SCS).
+        8. Get single RO Duration (N_dur^RA * t_symb).
+        9. Get RO absolute Occasions using compute_rach_occasion_starting_symbols().
+        10. Check overlap with PUSCH symbols (with separate PUSCH SCS) for each RO absolute Occasion.
+        11. Create dictionary containing a tuple of occupied PUSCH OFDM symbols (values) for each RO (keys).
 
     Parameters
     ----------
+    nr_freq_range : str
+        The frequency range, either FR1 or FR2.
+    nr_duplex_mode : str
+        The duplex mode, either TDD or FDD.
+    prach_conf_idx : int
+        The PRACH configuration index.
+    delta_f_ra_hz : int
+        The PRACH subcarrier spacing in Hz.
+    delta_f_hz : int
+        The PUSCH subcarrier spacing in Hz.
 
     Returns
     -------
@@ -2588,14 +2643,23 @@ def compute_prach_guard_times(nr_freq_range: str, nr_duplex_mode: str, prach_con
     A short GT occurs when all occupied PUSCH OFDM symbols are fully covered by RACH ocasions.
     A long GT occurs when an occupied PUSCH OFDM symbol is not fully covered by RACH occasions, leaving a time gap until the end of the symbol.
 
-    Steps
-    -----
-    1. Get dictionary containing a tuple of occupied PUSCH OFDM symbols for each RO using compute_pusch_ofdm_symbols_occupied_by_rach_occasions().
-    2. Compute time span between end of ZC Sequence and end of last occupied PUSCH OFDM symbol; this is the Guard Time (GT)!
-    3. Create tuple with all GTs for the given PRACH configuration; some GTs might vary if there is not perfect overlap between RO and PUSCH time grid.
+    :Steps:
+        1. Get dictionary containing a tuple of occupied PUSCH OFDM symbols for each RO using compute_pusch_ofdm_symbols_occupied_by_rach_occasions().
+        2. Compute time span between end of ZC Sequence and end of last occupied PUSCH OFDM symbol; this is the Guard Time (GT)!
+        3. Create tuple with all GTs for the given PRACH configuration; some GTs might vary if there is not perfect overlap between RO and PUSCH time grid.
 
     Parameters
     ----------
+    nr_freq_range : str
+        The frequency range, either FR1 or FR2.
+    nr_duplex_mode : str
+        The duplex mode, either TDD or FDD.
+    prach_conf_idx : int
+        The PRACH configuration index.
+    delta_f_ra_hz : int
+        The PRACH subcarrier spacing in Hz.
+    delta_f_hz : int
+        The PUSCH subcarrier spacing in Hz.
 
     Returns
     -------
@@ -2832,33 +2896,33 @@ def compute_maximum_gnb_cell_radius(prach_preamble_format: str, l_ra: int, delta
     """Compute the maximum gNB cell radius.
     This is experimental only, since the computational methods do not deliver proper results.
 
-    Sources
-    -------
-    The computation below follows Section C.2 ("Cell Dimensioning) and Table 2 of
+    :Sources:
+        The computation below follows Section C.2 ("Cell Dimensioning) and Table 2 of
         A. Chakrapani, "On the Design Details of SS/PBCH, Signal Generation and PRACH in 5G-NR,"
         in IEEE Access, vol. 8, pp. 136617-136637, 2020, doi: 10.1109/ACCESS.2020.3010500
 
-    r_cell <= ( N_CS / (Δf_RA * L_RA) - τ_d,PUSCH / 2^µ ) * c_0 / 2
+    ``r_cell <= ( N_CS / (Δf_RA * L_RA) - τ_d,PUSCH / 2^µ ) * c_0 / 2``
 
     Additionally, the cell radius formula given by https://5g.smarttelecomedu.com/prach-preamble-generation/
-        is adapted:
+    is adapted:
 
-    r_cell <= ( N_CS / (Δf_RA * L_RA) - τ_d,PUSCH ) * c_0 / 2
+    ``r_cell <= ( N_CS / (Δf_RA * L_RA) - τ_d,PUSCH ) * c_0 / 2``
 
     Lower bound for the cyclic shift N_CS in LTE according to S. Sesia, I. Toufik, M. Baker,
-        "LTE The UMTS Long Term Evolution: From Theory to Practice":
+    "LTE The UMTS Long Term Evolution: From Theory to Practice":
 
-    N_CS >= ceil( (20 / 3 * r_cell - τ_ds) * N_ZC / T_SEQ ) + n_g
+    ``N_CS >= ceil( (20 / 3 * r_cell - τ_ds) * N_ZC / T_SEQ ) + n_g``
 
     where:
 
-    - r_cell: cell size in km
-    - τ_ds: maximum delay spread
-    - N_ZC: PRACH sequence length (Zadoff-Chu-Sequence, here: 839)
-    - T_SEQ: PRACH sequence duration in µs
-    - n_g: number of additional guard samples due to the receiver pulse shaping filter
+    * r_cell: cell size in km
+    * τ_ds: maximum delay spread
+    * N_ZC: PRACH sequence length (Zadoff-Chu-Sequence, here: 839)
+    * T_SEQ: PRACH sequence duration in µs
+    * n_g: number of additional guard samples due to the receiver pulse shaping filter
 
-    NOTE: The idea behind this seems to be, that multiple consecutive shifted ZC-sequences will behave as if those sequences are free to be interpreted as guard time.
+    .. note::
+        The idea behind this seems to be, that multiple consecutive shifted ZC-sequences will behave as if those sequences are free to be interpreted as guard time.
 
     Parameters
     ----------
@@ -3228,7 +3292,9 @@ def compute_pusch_cyclic_prefix_duration(mu: int, cyclic_prefix_extended_bool: b
 
     According to 3GPP TS 38.211 ch. 5.3.1, the extended cyclic prefix does not occur together with a longer cyclic prefix every 0.5 ms!
 
-    **NOTE: All the calculations in this function should actually be used for PRACH, not PUSCH!**
+    .. note::
+        All the calculations in this function should actually be used for PRACH, not PUSCH!
+
     Correction: ch. 5.3.1 targets all channels except PRACH and RIM-RS
 
     | Numerology | SCS     | Symbols with longer duration |
@@ -3241,24 +3307,23 @@ def compute_pusch_cyclic_prefix_duration(mu: int, cyclic_prefix_extended_bool: b
     |          5 | 480 kHz |            [0] for slots n*4 |
     |          6 | 960 kHz |            [0] for slots n*4 |
 
-    Example
-    -------
-    - Parameters
-        - Numerology: 0 (15 kHz SCS)
-        - Channel bandwidth: 20 MHz
-        - Frequency range: FR1
-        - Longer symbol duration: False
-    - Resulting
-        - 14 OFDM symbols per slot
-        - FFT size: 1024 samples
-        - Cyclic prefix length for symbols 1-6 and 8-13: 144 FFT samples
-        - Cyclic prefix length for symbols 0 and 7 (longer symbol duration = True)
-    - Check for normal cyclic prefix with 14 OFDM symbols per slot:
-        - The OFDM symbols with number 0 or (7 * 2^µ) in a slot have a cyclic prefix duration of 144 * 2^-µ + 16 FFT samples.
-        - All other OFDM symbols have a cyclic prefix duration of 144 * 2^-µ FFT samples.
+    :Example:
+        * Parameters
+            * Numerology: 0 (15 kHz SCS)
+            * Channel bandwidth: 20 MHz
+            * Frequency range: FR1
+            * Longer symbol duration: False
+        * Resulting
+            * 14 OFDM symbols per slot
+            * FFT size: 1024 samples
+            * Cyclic prefix length for symbols 1-6 and 8-13: 144 FFT samples
+            * Cyclic prefix length for symbols 0 and 7 (longer symbol duration = True)
+        * Check for normal cyclic prefix with 14 OFDM symbols per slot:
+            * The OFDM symbols with number 0 or (7 * 2^µ) in a slot have a cyclic prefix duration of 144 * 2^-µ + 16 FFT samples.
+            * All other OFDM symbols have a cyclic prefix duration of 144 * 2^-µ FFT samples.
 
     For extended cyclic prefix with 12 OFDM symbols per slot:
-    - All OFDM symbols have a cyclic prefix duration of 512 * 2^-µ FFT samples.
+    * All OFDM symbols have a cyclic prefix duration of 512 * 2^-µ FFT samples.
 
     Parameters
     ----------
@@ -3436,13 +3501,12 @@ def get_table_row_from_channel_bw(channel_bw_hz: int, freq_range: str, scs_hz: i
     """Get the table row based on the Channel Bandwidth.
     This refers to 3GPP TS 38.104 Tables B.5.2-1 to B.5.2-4 and Tables C.5.2-1 to C.5.2-3.
 
-    Columns
-    -------
-    - Channel bandwidth (MHz)
-    - FFT size: row_series['FFT size'].item()
-    - CP length (various column headers): row_series.iloc[:, 2].item()
-    - EVM window length W: row_series['EVM window length W'].item()
-    - Ratio of W to total CP length (Note) (%) (various column headers): row_series.iloc[:, 4].item()
+    :Columns:
+        * 0 : Channel bandwidth (MHz)
+        * 1 : FFT size: row_series['FFT size'].item()
+        * 2 : CP length (various column headers): row_series.iloc[:, 2].item()
+        * 3  :EVM window length W: row_series['EVM window length W'].item()
+        * 4 : Ratio of W to total CP length (Note) (%) (various column headers): row_series.iloc[:, 4].item()
 
     Parameters
     ----------
@@ -3457,7 +3521,6 @@ def get_table_row_from_channel_bw(channel_bw_hz: int, freq_range: str, scs_hz: i
 
     cyclic_prefix_extended_bool : bool
         True, if the cyclic prefix has extended length.
-
 
     Returns
     -------
@@ -3698,8 +3761,7 @@ def convert_frequency_to_arfcn(frequency_hz: int):
     """Convert a frequency to a NR-ARFCN according to 3GPP TS 38.104 chapter 5.4.2.1.
 
     The computation formula is:
-
-    N_REF = (F_REF - F_REF-OFFS) / ΔF_Global + N_REF-Offs
+        ``N_REF = (F_REF - F_REF-OFFS) / ΔF_Global + N_REF-Offs``
 
     Parameters
     ----------
@@ -3737,8 +3799,7 @@ def convert_arfcn_to_frequency(arfcn: int):
     """Convert a NR-ARFCN to a frequency according to 3GPP TS 38.104 chapter 5.4.2.1.
 
     The computation formula is:
-
-    F_REF = F_REF-OFFS + ΔF_Global * (N_REF - N_REF-Offs)
+        ``F_REF = F_REF-OFFS + ΔF_Global * (N_REF - N_REF-Offs)``
 
     Warning: All frequencies in the formula are expected to be in MHz by the standard!
 
@@ -3766,6 +3827,44 @@ def convert_arfcn_to_frequency(arfcn: int):
         return frequency_hz
     else:
         raise TypeError("arfcn should be of type int, but is {0}!".format(type(arfcn)))
+
+
+def find_keys(data, **criteria):
+    """Find a sub-dictionary of an input dictionary matching the given criteria.
+
+    Parameters
+    ----------
+    data : dict | MappingProxyType
+        The dictionary to be searched.
+
+    criteria : dict
+        A dictionary with a subset of parameters present in data, as keys and values.
+        Values always are a tuple of the pattern (value, None)
+
+    Raises
+    ------
+    TypeError
+        If data is not of type dict.
+    TypeError
+        If criteria is not of type dict.
+
+    """
+    if not isinstance(data, dict) and not isinstance(data, MappingProxyType):
+        raise TypeError("data should be of type dict, but is {0}".format(type(data)))
+    if not isinstance(criteria, dict):
+        raise TypeError("criteria should be of type dict, but is {0}".format(type(criteria)))
+
+    criteria = {
+        k: v
+        for k, v in criteria.items()
+        if v != IGNORE
+    }
+
+    return [
+        k
+        for k, v in data.items()
+        if all(v.get(field) == value for field, value in criteria.items())
+    ]
 
 
 if __name__ == "__main__":

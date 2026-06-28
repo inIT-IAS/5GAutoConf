@@ -13,31 +13,36 @@ For synthesizing cell configuration parameters, 5GAutoConf automatically assumes
 In that case, no analysis of input arguments is performed.
 Consequently, if no kwargs are passed, 5GAutoConf only performs an analysis.
 
-Usage: run.py [-h] [-f FREQUENCYBAND] [-b BANDWIDTH] [-r RASTER] [-d {TDD,FDD}] [-c CENTER] [-s {b200,b210,x300,x310,none}] [-l {debug,info,warning,error,critical}]
+:Usage:
+    >>> run.py [-h] [-f FREQUENCYBAND] [-b BANDWIDTH] [-r RASTER] [-d {TDD,FDD}] [-c CENTER] [-s {b200,b210,x300,x310,none}] [-l {debug,info,warning,error,critical}] [**kwargs]
 
-Options
--------
+:Options:
+    * ``-h``, ``--help``: Show the help message and exit.
+    * ``-f``, ``--frequencyband``: The 5G NR frequency band.
+    * ``-b``, ``--bandwidth``: The bandwidth in MHz of the channel to be configured.
+    * ``-r``, ``--raster``: The Δf-raster in kHz. This corresponds to the subcarrier spacing SCS.
+    * ``-d``, ``--duplex``: The duplex mode.
+    * ``-c``, ``--center``: The desired center frequency in MHz of the channel to be configured.
+    * ``-s``, ``--sdr``: The Software Defined Radio model being used.
+    * ``-l``, ``--loglevel``: The logging level for printing to the console. The logfile is always at level debug.
 
-'-h', '--help': Show the help message and exit.
-'-f', '--frequencyband': The 5G NR frequency band.
-'-b', '--bandwidth': The bandwidth in MHz of the channel to be configured.
-'-r', '--raster': The ΔFRaster in kHz. This correspongs to the subcarrier spacing SCS.
-'-d', '--duplex': The Duplex mode.
-'-c', '--center': The desired center frequency in MHz of the channel to be configured.
-'-s', '--sdr': The Software Defined Radio model being used.
-'-l', '--loglevel': The logging level for printing to the console. The logfile is always at level debug.
+:Synthesis Arguments (kwargs):
+    * ``n=<value>``                 Refractive index of the medium
+    * ``r-cell=<value>``            Maximum gNB cell radius in meters
+    * ``ue-speed=<value>``          Maximum UE speed in m/s
+    * ``tau-d=<value>``             Maximum delay spread in microseconds
+    * ``x=<value>``                 [PRACH] x for SFN, so that SFN mod x = y (can be omitted)
+    * ``y=<value>``                 [PRACH] y for SFN, so that SFN mod x = y (can be omitted)
+    * ``subframe-number=<value>``   [PRACH] Subframe number (can be omitted)
+    * ``starting-symbol=<value>``   [PRACH] Starting symbol (can be omitted)
+    * ``n-slot-ra=<value>``         [PRACH] Number of PRACH slots within a subframe / 60 kHz slot (can be omitted)
+    * ``n-t-ra-slot=<value>``       [PRACH] Number of time-domain PRACH occasions within a PRACH slot (can be omitted)
+    * ``n-dur-ra=<value>``          [PRACH] PRACH occasion duration (can be omitted)
 
-Synthesis Arguments
--------------------
 
-'n=<value>'         Refractive index of the medium
-'r-cell=<value>'    Maximum gNB cell radius in meters
-'ue-speed=<value>'  Maximum UE speed in m/s
-'tau-d=<value>'     Maximum delay spread in microseconds
-
-Examples:
-    python run.py -c 3780 n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00
-    gnbautoconf -c 3780 n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00
+:Examples:
+    >>> python run.py -f 78 -b 40 -c 3780 -s b210 -l info n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00 x=1 y=0 subframe-number=9 starting-symbol=0 n-slot-ra=2 n-t-ra-slot=1 n-dur-ra=12
+    >>> gnbautoconf -c 3780 n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00
 
 """
 import argparse
@@ -45,11 +50,12 @@ import logging
 import sys
 import math
 import json
+from ast import literal_eval
 
 from importlib.metadata import version
 from logging_config import setup_logging
-from configurator import tools
 from configurator import tables
+from configurator import tools
 from configurator import generator
 
 
@@ -62,13 +68,20 @@ def main():
         description=("Create a 5G-NR-compatible configuration."),
         epilog="""
 synthesis arguments:
-  n=<value>         Refractive index of the medium
-  r-cell=<value>    Maximum gNB cell radius in meters
-  ue-speed=<value>  Maximum UE speed in m/s
-  tau-d=<value>     Maximum delay spread in microseconds
+  n=<value>                 Refractive index of the medium
+  r-cell=<value>            Maximum gNB cell radius in meters
+  ue-speed=<value>          Maximum UE speed in m/s
+  tau-d=<value>             Maximum delay spread in microseconds
+  x=<value>                 [PRACH] x for SFN, so that SFN mod x = y (can be omitted)
+  y=<value>                 [PRACH] y for SFN, so that SFN mod x = y (can be omitted)
+  subframe-number=<value>   [PRACH] Subframe number (can be omitted)
+  starting-symbol=<value>   [PRACH] Starting symbol (can be omitted)
+  n-slot-ra=<value>         [PRACH] Number of PRACH slots within a subframe / 60 kHz slot (can be omitted)
+  n-t-ra-slot=<value>       [PRACH] Number of time-domain PRACH occasions within a PRACH slot (can be omitted)
+  n-dur-ra=<value>          [PRACH] PRACH occasion duration (can be omitted)
 
 Examples:
-  python run.py -c 3780 n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00
+  python run.py -f 78 -b 40 -c 3780 -s b210 -l info n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00 x=1 y=0 subframe-number=9 starting-symbol=0 n-slot-ra=2 n-t-ra-slot=1 n-dur-ra=12
   gnbautoconf -c 3780 n=1.000293 r-cell=1900 ue-speed=27.78 tau-d=15.00
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -76,7 +89,7 @@ Examples:
 
     parser.add_argument('-f', '--frequencyband', type=int, default=78, help="The 5G NR frequency band.")
     parser.add_argument('-b', '--bandwidth', type=int, default=40, help="The bandwidth in MHz of the channel to be configured.")
-    parser.add_argument('-r', '--raster', type=int, default=30, help="The ΔFRaster in kHz. This correspongs to the subcarrier spacing SCS.")
+    parser.add_argument('-r', '--raster', type=int, default=30, help="The ΔFRaster in kHz. This corresponds to the subcarrier spacing SCS.")
     parser.add_argument('-d', '--duplex', type=str, default="TDD", choices=["TDD", "FDD"], help="The Duplex mode.")
     parser.add_argument('-c', '--center', type=float, default=3619.2, help="The desired center frequency in MHz of the channel to be configured.")
     parser.add_argument('-s', '--sdr', type=str, default="b210", choices=["b200", "b210", "x300", "x310", "none"], help="The Software Defined Radio model being used.")
@@ -514,7 +527,11 @@ Examples:
         n_ref_ind = float(kwargs["n"])
         logger.info("Refractive index of the medium: {0}".format(n_ref_ind))
 
-        t_c_min_s = tools.C_M_PER_S / (n_ref_ind * 2 * ue_speed_max_m_s * nr_channel_center_freq_hz)
+        try:
+            t_c_min_s = tools.C_M_PER_S / (n_ref_ind * 2 * ue_speed_max_m_s * nr_channel_center_freq_hz)
+        except ZeroDivisionError:
+            logger.warning("Tried to divide by zero for a stationary UE. Assuming a channel coherence time of 1 s from here on.")
+            t_c_min_s = 1.
         logger.info("Minimum channel coherence time: %.2f µs", t_c_min_s * 1_000_000)
 
         # Maximum channel delay spread
@@ -527,15 +544,19 @@ Examples:
         tau_d_max_s = tau_d_max_us / 1_000_000.
         logger.info("Maximum delay spread: %.2f µs", tau_d_max_us)
 
-        applicable_t_cp_ra_dict = tools.compute_applicable_t_cp_ra_dict(
-            t_c_min_s=t_c_min_s,
-            tau_d_max_s=tau_d_max_s
-        )
+        try:
+            applicable_t_cp_ra_dict = tools.compute_applicable_t_cp_ra_dict(
+                t_c_min_s=t_c_min_s,
+                tau_d_max_s=tau_d_max_s
+            )
+        except ValueError as e:
+            logger.error(e)
+            logger.error("Generating synthesized configuration failed!")
+            sys.exit()
 
         logger.debug("Applicable t_CP^RA:")
         logger.debug(json.dumps(applicable_t_cp_ra_dict, indent=4))
 
-        # r_cell_max_m = 1900.  # m
         r_cell_max_m = float(kwargs["r-cell"])
         logger.info("Cell radius: %.2f m", r_cell_max_m)
         t_rt_max_s = 2. * n_ref_ind * r_cell_max_m / tools.C_M_PER_S
@@ -543,9 +564,14 @@ Examples:
         t_gt_min = t_rt_max_s  # Minimum guard time
         logger.info("Minimum guard time: %.2f µs", t_gt_min * 1e6)
 
-        applicable_t_gt_ra_dict = tools.compute_applicable_t_gt_ra_dict(
-            t_rt_max_s=t_rt_max_s
-        )
+        try:
+            applicable_t_gt_ra_dict = tools.compute_applicable_t_gt_ra_dict(
+                t_rt_max_s=t_rt_max_s
+            )
+        except ValueError:
+            logger.error("It seems a cell radius of {0} m is too large and no guard time higher than the round-trip delay of {1} µs could be found!".format(r_cell_max_m, t_rt_max_s * 1_000_000))
+            logger.error("Generating synthesized configuration failed!")
+            sys.exit()
 
         logger.debug("Applicable T_GT^RA:")
         logger.debug(json.dumps(dict(sorted(applicable_t_gt_ra_dict.items())), indent=4))
@@ -610,10 +636,15 @@ Examples:
 
         # Rank aggregation
 
-        min_max_matched_tuple = tools.balanced_min_max_rank(
-            ordered_pairs_prach_tuple_t_cp_ra,
-            ordered_pairs_prach_tuple_t_gt_ra
-        )
+        try:
+            min_max_matched_tuple = tools.balanced_min_max_rank(
+                ordered_pairs_prach_tuple_t_cp_ra,
+                ordered_pairs_prach_tuple_t_gt_ra
+            )
+        except ValueError:
+            logger.error("It seems a UE speed of {0} m/s is too high for a delay spread of {1} µs!".format(ue_speed_max_m_s, tau_d_max_us))
+            logger.error("Generating synthesized configuration failed!")
+            sys.exit()
 
         logger.debug("Tuples with balanced matches of minimum and maximum:")
         logger.debug(min_max_matched_tuple)
@@ -633,7 +664,12 @@ Examples:
             match_set=max_set
         )
 
-        new_ue_max_speed_m_s = tools.C_M_PER_S / (n_ref_ind * 2 * next(iter(min_t_cp_ra_dict)) * nr_channel_center_freq_hz)
+        try:
+            new_ue_max_speed_m_s = tools.C_M_PER_S / (n_ref_ind * 2 * next(iter(min_t_cp_ra_dict)) * nr_channel_center_freq_hz)
+        except ZeroDivisionError:
+            logger.error("A refractive index of {0} is not permitted!".format(n_ref_ind))
+            logger.error("Generating synthesized configuration failed!")
+            sys.exit()
 
         min_t_gt_ra_dict = tools.filter_prach_dict(
             input_dict=matched_t_gt_ra_dict,
@@ -691,40 +727,81 @@ Examples:
         # Static parameters, replace with computations later
 
         freq_range = tools.get_freq_range_from_center_freq(nr_channel_center_freq_hz=nr_channel_center_freq_hz)
-        x_snf_stat = 1
-        y_snf_stat = 0
-        subframe_number_stat = 9
-        starting_symbol_stat = 0
-
-        n_slot_ra_stat = 2  # Number of PRACH slots within a subframe
-        n_t_ra_slot_stat = 1  # Number of time-domain PRACH occasions within a PRACH slot
-        n_dur_ra_stat = 12  # PRACH duration
-
-        n_slot_ra = n_slot_ra_stat
-        n_t_ra_slot = n_t_ra_slot_stat
-        n_dur_ra = n_dur_ra_stat
 
         logger.info("Static PRACH Config Idx Parameters:")
         logger.info("    Frequency Range: {0}".format(freq_range))
         logger.info("    Duplex Mode: {0}".format(nr_duplex_mode))
-        logger.info("    x (SNF): {0}".format(x_snf_stat))
-        logger.info("    y (SNF): {0}".format(y_snf_stat))
-        logger.info("    Subframe number: {0}".format(subframe_number_stat))
-        logger.info("    Starting symbol: {0}".format(starting_symbol_stat))
+
+        # Choose any of these manually if desired
+        # x_sfn_stat = 1 and y_sfn_stat = 0 result in a PRACH occasion for every system frame number (SFN)
+
+        try:
+            x_sfn_stat = int(kwargs["x"])
+            logger.info("    x (SFN): {0}".format(x_sfn_stat))
+        except KeyError:
+            x_sfn_stat = 1
+
+        try:
+            y_sfn_stat = literal_eval(kwargs["y"])
+            logger.info("    y (SFN): {0}".format(y_sfn_stat))
+        except KeyError:
+            y_sfn_stat = 0
+
+        try:
+            subframe_number_stat = literal_eval(kwargs["subframe-number"])  # For `FR2` and `TDD`, this is actually the slot number.
+            logger.info("    Subframe number: {0}".format(subframe_number_stat))
+        except KeyError:
+            subframe_number_stat = None
+
+        try:
+            starting_symbol_stat = int(kwargs["starting-symbol"])
+            logger.info("    Starting Symbol: {0}".format(starting_symbol_stat))
+        except KeyError:
+            starting_symbol_stat = None
+
+        # Number of PRACH slots within a subframe / 60 kHz slot
+        try:
+            n_slot_ra_stat = int(kwargs["n-slot-ra"])
+            logger.info("    n_slot^RA: {0}".format(n_slot_ra_stat))
+        except KeyError:
+            n_slot_ra_stat = None
+
+        # Number of time-domain PRACH occasions within a PRACH slot
+        try:
+            n_t_ra_slot_stat = int(kwargs["n-t-ra-slot"])
+            logger.info("    N_t^RA,slot: {0}".format(n_t_ra_slot_stat))
+        except KeyError:
+            n_t_ra_slot_stat = None
+
+        # PRACH occasion duration
+        try:
+            n_dur_ra_stat = int(kwargs["n-dur-ra"])
+            logger.info("    N_dur^RA: {0}".format(n_dur_ra_stat))
+        except KeyError:
+            n_dur_ra_stat = None
+
+        n_slot_ra = n_slot_ra_stat
+        n_t_ra_slot = n_t_ra_slot_stat
+        n_dur_ra = n_dur_ra_stat
 
         # Calculated parameters
         second_key, level3 = next(iter(next(iter(min_t_cp_ra_dict.values())).items()))
         prach_preamble_format_calc = second_key
         third_items = tuple(level3.items())
         delta_f_ra_calc = third_items[0][1]
-        scs_ra_calc = tools.SCS_HZ_TO_NUMEROLOGY[delta_f_ra_calc]
+        try:
+            scs_ra_calc = tools.SCS_HZ_TO_NUMEROLOGY[delta_f_ra_calc]
+        except KeyError:
+            logger.error("OpenAirInterface5G currently only allows msg1 Subcarrier Spacing of 15 kHz or higher, but the input parameters suggest {0} kHz instead!".format(delta_f_ra_calc / 1_000))
+            logger.error("Generating synthesized configuration failed!")
+            sys.exit()
 
         logger.info("Calculated PRACH Config Idx Parameters:")
         logger.info("    PRACH Preamble Format: {0}".format(prach_preamble_format_calc))
         logger.info("    \\Delta f_RA: {0}".format(delta_f_ra_calc))
 
         if prach_preamble_format_calc in ['0', '1', '2', '3']:
-            n_slot_ra_calc = None  # Number of PRACH slots within a subfram / 60 kHz slot
+            n_slot_ra_calc = None  # Number of PRACH slots within a subframe / 60 kHz slot
             n_t_ra_slot_calc = None  # Number of time-domain PRACH occasions within a PRACH slot
             n_dur_ra_calc = 0  # PRACH occasion duration
 
@@ -732,29 +809,57 @@ Examples:
             n_t_ra_slot = n_t_ra_slot_calc
             n_dur_ra = n_dur_ra_calc
 
-        logger.info("    n_slot^RA: {0}".format(n_slot_ra))
-        logger.info("    N_t^RA,slot: {0}".format(n_t_ra_slot))
-        logger.info("    N_dur^RA: {0}".format(n_dur_ra))
+            logger.info("    n_slot^RA: {0}".format(n_slot_ra))
+            logger.info("    N_t^RA,slot: {0}".format(n_t_ra_slot))
+            logger.info("    N_dur^RA: {0}".format(n_dur_ra))
 
         # PRACH Configuration Index
 
-        prach_config_idx_calc = tools.get_prach_configuration_index_from_parameters(
+        prach_config_idx_calc_lst = tools.get_prach_configuration_index_from_parameters(
             freq_range=freq_range,  # Frequency Range
             duplex_mode=nr_duplex_mode,  # Duplex Mode
             preamble_format=prach_preamble_format_calc,  # PRACH Preamble Format
-            x_snf=x_snf_stat,  # x for SNF
-            y_snf=y_snf_stat,  # y for SNF
-            subframe_number=subframe_number_stat,  # Subframe number
+            x_sfn=x_sfn_stat,  # x for SFN
+            y_sfn=y_sfn_stat,  # y for SFN
+            subframe_number=subframe_number_stat,  # Subframe number, For `FR2` and `TDD`, this is actually the slot number.
             starting_symbol=starting_symbol_stat,  # Starting symbol
             n_slot_ra=n_slot_ra,  # Number of PRACH slots within a subframe / 60 kHz slot
             n_t_ra_slot=n_t_ra_slot,  # Number of time-domain PRACH occasions within a PRACH slot
             n_dur_ra=n_dur_ra  # PRACH occasion duration
         )
+
+        logger.debug("PRACH configuration index list: {0}".format(prach_config_idx_calc_lst))
+
         try:
-            logger.info("PRACH Configuration Index calc: {0}".format(prach_config_idx_calc[0]))  # Pick first entry regardless of length
+            prach_config_idx_calc = int(prach_config_idx_calc_lst[0])  # Arbitrarily choose first entry, cast form string to int
+            logger.info("PRACH Configuration Index calc: {0}".format(prach_config_idx_calc))  # Pick first entry regardless of length
         except IndexError:
             logger.error("No PRACH configuration Index could be calculated!")
             sys.exit()
+
+        if freq_range == "FR1" and nr_duplex_mode == "FDD":
+            prach_conf_dict = tables.ts_38_211_table_6_3_3_2_2(prach_config_idx_calc)
+        elif freq_range == "FR1" and nr_duplex_mode == "TDD":
+            prach_conf_dict = tables.ts_38_211_table_6_3_3_2_3(prach_config_idx_calc)
+        elif freq_range == "FR2" and nr_duplex_mode == "TDD":
+            prach_conf_dict = tables.ts_38_211_table_6_3_3_2_4(prach_config_idx_calc)
+
+        logger.info("PRACH Config Index Parameters:")
+        logger.info("    PRACH Preamble Format: {0}".format(prach_conf_dict["Preamble format"][0]))
+        logger.info("    x (SFN): {0}".format(prach_conf_dict["x"][0]))
+        logger.info("    y (SFN): {0}".format(prach_conf_dict["y"][0]))
+        logger.info("    Subframe number: {0}".format(prach_conf_dict["Subframe number"][0]))  # For `FR2` and `TDD`, this is actually the slot number.
+        logger.info("    Starting symbol: {0}".format(prach_conf_dict["Starting symbol"][0]))
+        try:
+            logger.info("    n_slot^RA: {0}".format(prach_conf_dict["Number of PRACH slots within a subframe"][0]))
+        except KeyError:
+            try:
+                logger.info("    n_slot^RA: {0}".format(prach_conf_dict["Number of PRACH slots within a 60 kHz slot"][0]))
+            except KeyError:
+                logger.error("No PRACH configuration Index could be calculated!")
+                sys.exit()
+        logger.info("    N_t^RA,slot: {0}".format(prach_conf_dict["Number of time-domain PRACH occasions within a PRACH slot"][0]))
+        logger.info("    N_dur^RA: {0}".format(prach_conf_dict["PRACH duration"][0]))
 
         # W R I T I N G   C O N F I G
 
@@ -803,7 +908,7 @@ Examples:
 
         # INJECT SYNTHESIZED PARAMETERS
 
-        config_synth.dynamic_config_data["gNBs"]["servingCellConfigCommon"]["prach_ConfigurationIndex"] = int(prach_config_idx_calc[0])
+        config_synth.dynamic_config_data["gNBs"]["servingCellConfigCommon"]["prach_ConfigurationIndex"] = prach_config_idx_calc
         config_synth.dynamic_config_data["gNBs"]["servingCellConfigCommon"]["msg1_SubcarrierSpacing"] = scs_ra_calc
 
         # INJECT FIXES

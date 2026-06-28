@@ -18,11 +18,8 @@ identifiers:
     value: 10.1109/DCOSS-IoT_CONFERENCE_DOI
     description: Conference paper DOI
   - type: doi
-    value: 10.5281/zenodo.ZENODO_CONCEPT_DOI
+    value: https://doi.org/10.5281/zenodo.20796159
     description: Zenodo concept DOI
-  - type: doi
-    value: 10.5281/zenodo.ZENODO_VERSION_DOI
-    description: Zenodo version DOI
 repository-code: 'https://github.com/inIT-IAS/5GAutoConf'
 abstract: >-
   A Rapid Data-Driven Autoconfiguration Tool for 5G Base
@@ -34,5 +31,5 @@ keywords:
   - Software-Defined Radio
   - OpenAirInterface5G
 license: MPL-2.0
-version: 0.3.0
-date-released: '2026-06-22'
+version: 0.3.1
+date-released: '2026-06-29'
