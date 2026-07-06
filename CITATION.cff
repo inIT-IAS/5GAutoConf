@@ -22,8 +22,7 @@ identifiers:
     description: Zenodo concept DOI
 repository-code: 'https://github.com/inIT-IAS/5GAutoConf'
 abstract: >-
-  A Rapid Data-Driven Autoconfiguration Tool for 5G Base
-  Stations.
+  A Rapid Data-Driven Autoconfiguration Tool for 5G Base Stations.
 keywords:
   - 5G
   - gNB
@@ -31,5 +30,5 @@ keywords:
   - Software-Defined Radio
   - OpenAirInterface5G
 license: MPL-2.0
-version: 0.3.1
-date-released: '2026-06-29'
+version: 0.3.2
+date-released: '2026-07-06'

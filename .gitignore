@@ -291,4 +291,5 @@ html/
 tables/*
 plots/*
 docs/api/*
+!docs/api/index.rst
 docs/_build*

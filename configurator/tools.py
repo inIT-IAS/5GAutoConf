@@ -465,7 +465,7 @@ def verify_cbw_validity_from_freq_band(freq_band: int, cbw_hz: int):
     """Verify the validity of a CBW for the given Frequency Band.
     This refers to TS_38_101_1_TABLE_5_3_5_1 and TS_38_101_2_TABLE_5_3_5_1.
     Assumes Frequency Bands 1-256 for TS_38_101_1_TABLE_5_3_5_1 (FR1) and
-        Frequency bands 257-512 for TS_38_101_2_TABLE_5_3_5_1 (FR2).
+    Frequency bands 257-512 for TS_38_101_2_TABLE_5_3_5_1 (FR2).
 
     Parameters
     ----------
@@ -1366,8 +1366,8 @@ def compute_all_t_cp_ra_dict():
             # Test for valid combinations of PRACH Preamble Format and PRACH SCS
             if delta_f_ra_hz == 1250:
                 delta_f_ra_khz = 1.25
-            elif delta_f_ra_hz in [5000, 15000, 30000, 60000, 120000, 480000, 960000]:
-                delta_f_ra_khz = int(delta_f_ra_hz / 1000)
+            elif delta_f_ra_hz in [5_000, 15_000, 30_000, 60_000, 120_000, 480_000, 960_000]:
+                delta_f_ra_khz = int(delta_f_ra_hz / 1_000)
             if prach_preamble_format in ['0', '1', '2', '3']:
                 if delta_f_ra_khz != tables.ts_38_211_table_6_3_3_1_1(prach_preamble_format=prach_preamble_format)['Delta f_RA'][0]:
                     continue
@@ -3490,11 +3490,12 @@ def get_freq_range_from_center_freq(nr_channel_center_freq_hz: int):
         raise TypeError("nr_channel_center_freq_hz should be of type int, but is {0}!".format(type(nr_channel_center_freq_hz)))
 
     for freq_range in [tables.FREQ_RANGE_LIST[0], tables.FREQ_RANGE_LIST[1]]:
-        range_tuple = tables.ts_38_101_1_table_5_1_1(freq_range=freq_range)
-        if nr_channel_center_freq_hz in range(range_tuple[0], range_tuple[1] + 1):
+        range_hz_tuple = tables.ts_38_101_1_table_5_1_1(freq_range=freq_range)
+        if nr_channel_center_freq_hz in range(range_hz_tuple[0], range_hz_tuple[1] + 1):
             return freq_range
         else:
-            raise ValueError("{0} MHz is not a valid NR channel center frequency!".format(nr_channel_center_freq_hz / 1_000_000))
+            continue
+    raise ValueError("{0} MHz is not a valid NR channel center frequency!".format(nr_channel_center_freq_hz / 1_000_000))
 
 
 def get_table_row_from_channel_bw(channel_bw_hz: int, freq_range: str, scs_hz: int, cyclic_prefix_extended_bool: bool):

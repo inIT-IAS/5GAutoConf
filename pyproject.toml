@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gnbautoconf"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
   "coverage",
   "matplotlib",
@@ -47,8 +47,10 @@ classifiers = [
 dev = [
   "readme-coverage-badger",
   "sphinx",
-  "sphinx-rtd-theme",
-  "numpydoc",
+  "sphinx-copybutton",
+  "sphinx-design",
+  "furo",
+  "myst-parser"
   ]
 dist = [
   "build",

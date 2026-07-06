@@ -21,7 +21,7 @@ Consequently, if no kwargs are passed, 5GAutoConf only performs an analysis.
     * ``-f``, ``--frequencyband``: The 5G NR frequency band.
     * ``-b``, ``--bandwidth``: The bandwidth in MHz of the channel to be configured.
     * ``-r``, ``--raster``: The Δf-raster in kHz. This corresponds to the subcarrier spacing SCS.
-    * ``-d``, ``--duplex``: The duplex mode.
+    * ``-d``, ``--duplex``: DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode..
     * ``-c``, ``--center``: The desired center frequency in MHz of the channel to be configured.
     * ``-s``, ``--sdr``: The Software Defined Radio model being used.
     * ``-l``, ``--loglevel``: The logging level for printing to the console. The logfile is always at level debug.
@@ -90,7 +90,7 @@ Examples:
     parser.add_argument('-f', '--frequencyband', type=int, default=78, help="The 5G NR frequency band.")
     parser.add_argument('-b', '--bandwidth', type=int, default=40, help="The bandwidth in MHz of the channel to be configured.")
     parser.add_argument('-r', '--raster', type=int, default=30, help="The ΔFRaster in kHz. This corresponds to the subcarrier spacing SCS.")
-    parser.add_argument('-d', '--duplex', type=str, default="TDD", choices=["TDD", "FDD"], help="The Duplex mode.")
+    parser.add_argument('-d', '--duplex', type=str, default="TDD", choices=["TDD", "FDD"], help="DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode.")
     parser.add_argument('-c', '--center', type=float, default=3619.2, help="The desired center frequency in MHz of the channel to be configured.")
     parser.add_argument('-s', '--sdr', type=str, default="b210", choices=["b200", "b210", "x300", "x310", "none"], help="The Software Defined Radio model being used.")
     parser.add_argument('-l', '--loglevel', type=str, default="info", choices=["debug", "info", "warning", "error", "critical"], help="The logging level for printing to the console. The logfile is always at level debug.")
@@ -132,7 +132,7 @@ Examples:
     # --------------------------------------------------------------------------- #
     if not kwargs:
 
-        logger.info("----------- ANALYSIS -----------")
+        logger.info("----------- ANALYSIS MODE -----------")
 
         # Create instance of CreateConfig
         config = generator.CreateConfig(
@@ -515,7 +515,23 @@ Examples:
     # ------------------------------------------------------------------------------- #
     else:
 
-        logger.info("----------- SYNTHESIS -----------")
+        logger.info("----------- SYNTHESIS MODE -----------")
+
+        # Commandline arguments
+
+        freq_band_synth = int(args.frequencyband)
+        cbw_hz_synth = int(args.bandwidth * 1_000_000)
+        scs_hz_synth = int(args.raster * 1_000)
+        channel_center_freq_hz_synth = int(args.center * 1_000_000)
+        sdr = args.sdr.lower()
+
+        # Static parameters, replace with computations later
+
+        freq_range = tools.get_freq_range_from_center_freq(nr_channel_center_freq_hz=nr_channel_center_freq_hz)
+
+        logger.info("Static PRACH Config Idx Parameters:")
+        logger.info("    Frequency Range: {0}".format(freq_range))
+        logger.info("    Duplex Mode: {0}".format(nr_duplex_mode))
 
         # COHERENCE TIMES AND DELAY SPREADS
 
@@ -557,6 +573,43 @@ Examples:
         logger.debug("Applicable t_CP^RA:")
         logger.debug(json.dumps(applicable_t_cp_ra_dict, indent=4))
 
+        # Drop applicable_t_cp_ra_dict entries with SCS that is not permitted for the given frequency band freq_band_synth
+        # Use TS 38.101-1 Table 5.3.5-1 for FR1 and TS 38.101-2 Table 5.3.5-1 for FR2
+
+        if freq_range == "FR1":
+            nr_band_dict = tables.ts_38_101_1_table_5_3_5_1(freq_band=freq_band_synth)
+        else:
+            nr_band_dict = tables.ts_38_101_2_table_5_3_5_1(freq_band=freq_band_synth)
+
+        permitted_scs_khz_tuples_list = list(nr_band_dict.keys())
+
+        logging.debug("Permitted SCS kHz tuples list for NR operating band n{0}: {1}".format(freq_band_synth, permitted_scs_khz_tuples_list))
+
+        filtered_applicable_t_cp_ra_dict = {
+            key: outer
+            for key, outer in applicable_t_cp_ra_dict.items()
+            if any((v["Delta f_RA"] / 1_000, None) in permitted_scs_khz_tuples_list for v in outer.values())
+        }
+
+        logger.debug("Filtered applicable t_CP^RA:")
+        logger.debug(json.dumps(filtered_applicable_t_cp_ra_dict, indent=4))
+
+        # FOR TESTING ONLY: Set SSB SCS to match PRACH SCS
+        # TODO: Determine SSB SCS based on the same parameters as PRACH SCS
+
+        ssb_scs_hz = scs_hz_synth
+
+        # Compute applicable SSB SCS
+        # Use TS 38.104 Table 5.4.3.3-1 for FR1 and Table 5.4.3.3-2 for FR2
+
+        if freq_range == "FR1":
+            ssb_scs_dict = tables.ts_38_104_table_5_4_3_3_1(freq_band=freq_band_synth)
+        else:
+            ssb_scs_dict = tables.ts_38_104_table_5_4_3_3_2(freq_band=freq_band_synth)
+
+        if (ssb_scs_hz / 1_000, "kHz") not in ssb_scs_dict.keys():
+            raise ValueError("An SSB subcarrier spacing of {0} kHz is not permitted for NR operating band n{1}!".format(ssb_scs_hz / 1_000, freq_band_synth))
+
         r_cell_max_m = float(kwargs["r-cell"])
         logger.info("Cell radius: %.2f m", r_cell_max_m)
         t_rt_max_s = 2. * n_ref_ind * r_cell_max_m / tools.C_M_PER_S
@@ -579,7 +632,7 @@ Examples:
         # COMBINE PRACH PREAMBLE FORMATS AND SCS
 
         t_cp_ra_pairs = set()
-        for top_key, level2 in applicable_t_cp_ra_dict.items():
+        for top_key, level2 in filtered_applicable_t_cp_ra_dict.items():
             for k2, level3 in level2.items():
                 value = level3.get("Delta f_RA")
                 t_cp_ra_pairs.add((k2, value))
@@ -601,7 +654,7 @@ Examples:
         # T_CP^RA
 
         matched_t_cp_ra_dict = tools.filter_prach_dict(
-            input_dict=applicable_t_cp_ra_dict,
+            input_dict=filtered_applicable_t_cp_ra_dict,
             match_set=t_cp_ra_t_gt_ra_matches
         )
 
@@ -724,14 +777,6 @@ Examples:
 
         # COMPUTE PRACH CONFIG INDEX
 
-        # Static parameters, replace with computations later
-
-        freq_range = tools.get_freq_range_from_center_freq(nr_channel_center_freq_hz=nr_channel_center_freq_hz)
-
-        logger.info("Static PRACH Config Idx Parameters:")
-        logger.info("    Frequency Range: {0}".format(freq_range))
-        logger.info("    Duplex Mode: {0}".format(nr_duplex_mode))
-
         # Choose any of these manually if desired
         # x_sfn_stat = 1 and y_sfn_stat = 0 result in a PRACH occasion for every system frame number (SFN)
 
@@ -848,7 +893,13 @@ Examples:
         logger.info("    PRACH Preamble Format: {0}".format(prach_conf_dict["Preamble format"][0]))
         logger.info("    x (SFN): {0}".format(prach_conf_dict["x"][0]))
         logger.info("    y (SFN): {0}".format(prach_conf_dict["y"][0]))
-        logger.info("    Subframe number: {0}".format(prach_conf_dict["Subframe number"][0]))  # For `FR2` and `TDD`, this is actually the slot number.
+        try:
+            logger.info("    Subframe number: {0}".format(prach_conf_dict["Subframe number"][0]))
+        except KeyError:
+            try:
+                logger.info("    Slot number: {0}".format(prach_conf_dict["Slot number"][0]))  # For `FR2` and `TDD`, this is actually the slot number.
+            except KeyError:
+                logger.error("No PRACH configuration Index could be calculated!")
         logger.info("    Starting symbol: {0}".format(prach_conf_dict["Starting symbol"][0]))
         try:
             logger.info("    n_slot^RA: {0}".format(prach_conf_dict["Number of PRACH slots within a subframe"][0]))
@@ -862,14 +913,6 @@ Examples:
         logger.info("    N_dur^RA: {0}".format(prach_conf_dict["PRACH duration"][0]))
 
         # W R I T I N G   C O N F I G
-
-        # Commandline arguments
-
-        freq_band_synth = args.frequencyband
-        cbw_hz_synth = int(args.bandwidth * 1_000_000)
-        scs_hz_synth = int(args.raster * 1_000)
-        channel_center_freq_hz_synth = int(args.center * 1_000_000)
-        sdr = args.sdr.lower()
 
         # Create instance of CreateConfig
         config_synth = generator.CreateConfig(

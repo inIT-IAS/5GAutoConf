@@ -32,6 +32,38 @@ logger = logging.getLogger(__name__)
 class CreateConfig:
     """Create OAI5G-compatible configuration files.
 
+    Methods
+    -------
+    compute_absolute_frequency_ssb
+        Compute the Signal Source Block (SSB) Reference frequency SSB_REF.
+
+    compute_absolute_frequency_point_a
+        Compute the absoluteFrequencyPointA close to the lower limit of the usable channel.
+
+    read_static_config
+        Read static configuration from JSON file.
+
+    create_dynamic_config
+        Create dynamic configuration dictionary.
+
+    read_dynamic_config
+        Read dynamic configuration from dictionary.
+
+    convert_dict_to_oai5g_config_string
+        Convert a dict to OAI5G-compatible config string.
+
+    save_config_to_json
+        Save the configuration to a JSON file.
+
+    correct_quotation_marks
+        Correct string formats, which need extra quotation marks: "...".
+
+    create_openairinterface5g_config_file
+        Create OpenAirInterface5G Config File.
+
+    map_ssb_and_valid_prach_occasions
+        Map SSB resources and valid PRACH occasions.
+
     """
 
     def __init__(self, nr_freq_band: int, nr_cbw_hz: int, nr_scs_hz: int, nr_duplex_mode: str, nr_channel_center_freq_hz: int, static_config_filename: str, config_filename: str, sdr: str):
@@ -1248,7 +1280,7 @@ def create_ssb_time_domain_occupied_symbols(case: str, nr_channel_center_freq_hz
 
 
 def keys_exists(element: dict, *keys):
-    """Check if *keys (nested) exists in `element` (dict).
+    """Check if keys (nested) exists in `element` (dict).
 
     Parameters
     ----------

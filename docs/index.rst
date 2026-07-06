@@ -3,16 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-5GAutoConf documentation
+5GAutoConf Documentation
 ========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+5GAutoConf: A Rapid Data-Driven Autoconfiguration Tool for 5G Base Stations.
+
+.. seealso::
+   Source code available on GitHub https://github.com/inIT-IAS/5GAutoConf.
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table of Contents
 
-   api/modules
+   Guides <guides/index>
+   Theory of Work <theory/index>
+   API Reference <api/modules>
