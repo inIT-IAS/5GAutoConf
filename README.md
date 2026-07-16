@@ -9,7 +9,7 @@ Any changes to the core need to be manually integrated into `static_settings.jso
 
 **Note: The distribution name is `gnbautoconf` to avoid import errors when using `pip install` and `import` from a distribution site.**
 
-The API docs, guides, and theory of work are all available in `docs/`.
+The API docs, guides, and theory of work are all available in `docs/` or via [https://init-ias.github.io/5GAutoConf/](https://init-ias.github.io/5GAutoConf/)
 
 ## Setup
 
