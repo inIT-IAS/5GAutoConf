@@ -9,5 +9,5 @@
 Scripts for 5GAutoConf.
 """
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 __all__ = ["build_long_guard_time_prach_pusch_combination_tables", "build_prach_ssb_collision_free_tables", "build_tau_d_max_rtd_max_table"]

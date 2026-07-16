@@ -158,7 +158,7 @@ During `sphinx-quickstart docs`, choose:
 - `Separate source and build directories (y/n) [n]:` --> `n`
 - `Project name:` --> `5GAutoConf`
 - `Author name(s):` --> `Niels Hendrik Fliedner`
-- `Project release []:` --> the most recent release version, e.g. `v0.3.2`
+- `Project release []:` --> the most recent release version, e.g. `v0.3.3`
 - `Project language [en]:` --> en
 
 Edit `docs/conf.py`

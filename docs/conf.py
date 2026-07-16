@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(".."))
 project = '5GAutoConf'
 copyright = '2026, Niels Hendrik Fliedner'
 author = 'Niels Hendrik Fliedner'
-release = 'v0.3.2'
+release = 'v0.3.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
