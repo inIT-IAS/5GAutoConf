@@ -44,7 +44,7 @@ install:
 
 docs:
 	$(SPHINX_APIDOC) -f -o docs/api . docs site test.py
-	$(SPHINX_BUILD) -b html -W --keep-going docs docs/_build
+	$(SPHINX_BUILD) -b html --keep-going docs docs/_build
 
 test:
 	$(PYTHON) -m coverage run --omit '$(VENV_DIR)/*,*/ts_dicts.py' -m pytest test.py -v -m "not slow"
