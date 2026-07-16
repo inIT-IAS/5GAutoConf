@@ -9,7 +9,7 @@ Any changes to the core need to be manually integrated into `static_settings.jso
 
 **Note: The distribution name is `gnbautoconf` to avoid import errors when using `pip install` and `import` from a distribution site.**
 
-The API docs, guides, and theory of work are all available in `docs/`.
+The API docs, guides, and theory of work are all available in `docs/` or via [https://init-ias.github.io/5GAutoConf/](https://init-ias.github.io/5GAutoConf/)
 
 ## Setup
 
@@ -23,7 +23,7 @@ This program uses static configuration derived from `static_settings.json` and d
 Currently, **two modes** are supported: **Analysis** and **Synthesis**.
 
 ```bash
-gnbautoconf [-h] [-f FREQUENCYBAND] [-b BANDWIDTH] [-r RASTER] [-d {TDD,FDD}] [-c CENTER] [-s {b200,b210,x300,x310,none}] [-l {debug,info,warning,error,critical}] [**kwargs]
+gnbautoconf [-h] [-f FREQUENCYBAND] [-b BANDWIDTH] [-r RASTER] [-d {TDD,FDD} DEPRECATED] [-c CENTER] [-s {b200,b210,x300,x310,none}] [-l {debug,info,warning,error,critical}] [**kwargs]
 ```
 
 All CLI arguments have default values assigned.
@@ -40,7 +40,7 @@ The following options are mainly used for the **Analysis Mode**, while some are 
 | `-f`| `--frequencyband`|  | `78` | The 5G NR frequency band. | Yes |
 | `-b`| `--bandwidth`|  | `40` | The bandwidth in MHz of the channel to be configured. | Yes |
 | `-r`| `--raster`|  | `30` | The ΔFRaster in kHz. This corresponds to the subcarrier spacing SCS. | No |
-| `-d`| `--duplex`| `TDD`, `FDD` | `TDD` | **DEPRECATED** The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. | No |
+| `-d`| `--duplex`| `TDD`, `FDD` | `TDD` | **DEPRECATED** The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. It will be removed in a future release. | No |
 | `-c`| `--center`|  | `3619.2` | The desired center frequency in MHz of the channel to be configured. | Yes |
 | `-s`| `--sdr`| `b200`, `b210`, `x300`, `x310`, `none` | `b210` | The Software Defined Radio model being used. | Yes |
 | `-l`| `--loglevel`| `debug`, `info`, `warning`, `error`, `critical` | `info` | The logging level for printing to the console. The logfile is always at level `debug`. | Yes |
@@ -132,7 +132,7 @@ If you use 5GAutoConf in academic work, please cite both the software and the ac
 
 ### Software
 
-Niels Hendrik Fliedner. 5GAutoConf (Version 0.3.2) [Computer software]. Zenodo.
+Niels Hendrik Fliedner. 5GAutoConf (Version 0.3.3) [Computer software]. Zenodo.
 
 Concept DOI: https://doi.org/10.5281/zenodo.20796159
 

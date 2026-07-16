@@ -147,66 +147,9 @@ coverage html
 
 If `docs/` needs to be updated or fully rebuilt (e.g. after using `make clean`), the rst files can be fully regenerated from the project's root directory.
 
-Activate the virtual environment, then run `sphinx-quickstart`:
+Activate the virtual environment, then run from the project's root directory:
 
 ```bash
-sphinx-quickstart docs
-```
-
-During `sphinx-quickstart docs`, choose:
-
-- `Separate source and build directories (y/n) [n]:` --> `n`
-- `Project name:` --> `5GAutoConf`
-- `Author name(s):` --> `Niels Hendrik Fliedner`
-- `Project release []:` --> the most recent release version, e.g. `v0.3.2`
-- `Project language [en]:` --> en
-
-Edit `docs/conf.py`
-
-```python
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(".."))
-
-extensions = [
-    "myst_parser",
-    "sphinx.ext.autodoc",
-    "sphinx.ext.githubpages",
-    "sphinx.ext.mathjax",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-]
-
-autodoc_default_options = {
-    "members": True,
-    "undoc-members": False,
-    "show-inheritance": True,
-}
-
-napoleon_google_docstring = False
-napoleon_numpy_docstring = True
-
-source_suffix = {
-    ".md": "markdown",
-    ".rst": "restructuredtext",
-}
-
-master_doc = "index"
-
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-myst_enable_extensions = [
-    "dollarmath",
-    "amsmath",
-]
-
-html_theme = 'furo'
-html_static_path = []
-```
-
-From the project's root directory, run:
-
 sphinx-apidoc -f -o docs/api . docs site test.py
-sphinx-build -b html docs docs/_build
+sphinx-build -b html --keep-going docs docs/_build
+```

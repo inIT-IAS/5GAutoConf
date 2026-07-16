@@ -36,7 +36,7 @@ build:
 
 install:
 	$(PYTHON_BIN) -m venv $(VENV_DIR)
-	$(PIP) install .[dev,dist]
+	$(PIP) install ".[dev,dist]"
 	$(PYTHON) -m compileall .
 	$(PYTHON) -m scripts.build_long_guard_time_prach_pusch_combination_tables
 	$(PYTHON) -m scripts.build_prach_ssb_collision_free_tables
@@ -44,7 +44,7 @@ install:
 
 docs:
 	$(SPHINX_APIDOC) -f -o docs/api . docs site test.py
-	$(SPHINX_BUILD) -b html docs docs/_build
+	$(SPHINX_BUILD) -b html --keep-going docs docs/_build
 
 test:
 	$(PYTHON) -m coverage run --omit '$(VENV_DIR)/*,*/ts_dicts.py' -m pytest test.py -v -m "not slow"

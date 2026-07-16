@@ -21,7 +21,7 @@ Consequently, if no kwargs are passed, 5GAutoConf only performs an analysis.
     * ``-f``, ``--frequencyband``: The 5G NR frequency band.
     * ``-b``, ``--bandwidth``: The bandwidth in MHz of the channel to be configured.
     * ``-r``, ``--raster``: The Δf-raster in kHz. This corresponds to the subcarrier spacing SCS.
-    * ``-d``, ``--duplex``: DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode..
+    * ``-d``, ``--duplex``: DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. It will be removed in a future release.
     * ``-c``, ``--center``: The desired center frequency in MHz of the channel to be configured.
     * ``-s``, ``--sdr``: The Software Defined Radio model being used.
     * ``-l``, ``--loglevel``: The logging level for printing to the console. The logfile is always at level debug.
@@ -90,7 +90,7 @@ Examples:
     parser.add_argument('-f', '--frequencyband', type=int, default=78, help="The 5G NR frequency band.")
     parser.add_argument('-b', '--bandwidth', type=int, default=40, help="The bandwidth in MHz of the channel to be configured.")
     parser.add_argument('-r', '--raster', type=int, default=30, help="The ΔFRaster in kHz. This corresponds to the subcarrier spacing SCS.")
-    parser.add_argument('-d', '--duplex', type=str, default="TDD", choices=["TDD", "FDD"], help="DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode.")
+    parser.add_argument('-d', '--duplex', type=str, default="TDD", choices=["TDD", "FDD"], help="DEPRECATED The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. It will be removed in a future release.")
     parser.add_argument('-c', '--center', type=float, default=3619.2, help="The desired center frequency in MHz of the channel to be configured.")
     parser.add_argument('-s', '--sdr', type=str, default="b210", choices=["b200", "b210", "x300", "x310", "none"], help="The Software Defined Radio model being used.")
     parser.add_argument('-l', '--loglevel', type=str, default="info", choices=["debug", "info", "warning", "error", "critical"], help="The logging level for printing to the console. The logfile is always at level debug.")
@@ -121,7 +121,8 @@ Examples:
     nr_freq_band = args.frequencyband
     nr_cbw_hz = int(args.bandwidth * 1_000_000)
     nr_scs_hz = int(args.raster * 1_000)
-    # nr_duplex_mode = args.duplex
+    if args.duplex:
+        logger.warning("The CLI argument for duplex mode is DEPRECATED and will be removed in a future release. This input will be ignored: {0}".format(args.duplex))
     nr_channel_center_freq_hz = int(args.center * 1_000_000)
     sdr = args.sdr.lower()
 

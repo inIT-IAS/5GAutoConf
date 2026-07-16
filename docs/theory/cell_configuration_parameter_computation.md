@@ -14,7 +14,7 @@
 ## Cell Parameter Computation
 
 The following theory is based on the accompanying paper: Niels Hendrik Fliedner, Florian Klingler, Henning Trsek, "5GAutoConf: A Rapid Data-Driven
-Autoconfiguration Tool for 5G Base Stations," in *2026 22nd International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT)*, 2026 [\[0\]](https://ias-git.init.th-owl.de/space_niels_fliedner/paper-dcoss-iot-2026).
+Autoconfiguration Tool for 5G Base Stations," in *2026 22nd International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT)*, 2026 [\[0\]](https://www.th-owl.de/elsa/record/13829).
 If you are using the equations below in your published work, pleace cite the paper.
 
 ### Input Parameters

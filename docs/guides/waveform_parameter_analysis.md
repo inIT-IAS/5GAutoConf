@@ -33,7 +33,7 @@ The following options are mainly used for the **Analysis Mode**, while some are 
 | `-f`| `--frequencyband`|  | `78` | The 5G NR frequency band. |
 | `-b`| `--bandwidth`|  | `40` | The bandwidth in MHz of the channel to be configured. |
 | `-r`| `--raster`|  | `30` | The ΔFRaster in kHz. This corresponds to the subcarrier spacing SCS. |
-| `-d`| `--duplex`| `TDD`, `FDD` | `TDD` | **DEPRECATED** The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. |
+| `-d`| `--duplex`| `TDD`, `FDD` | `TDD` | **DEPRECATED** The Duplex mode. This serves no function anymore, since the frequency band already defines the duplex mode. It will be removed in a future release. |
 | `-c`| `--center`|  | `3619.2` | The desired center frequency in MHz of the channel to be configured. |
 | `-s`| `--sdr`| `b200`, `b210`, `x300`, `x310`, `none` | `b210` | The Software Defined Radio model being used. |
 | `-l`| `--loglevel`| `debug`, `info`, `warning`, `error`, `critical` | `info` | The logging level for printing to the console. The logfile is always at level `debug`. |
