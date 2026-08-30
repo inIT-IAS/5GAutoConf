@@ -142,9 +142,9 @@ BibTeX citation metadata is available via GitHub (`CITATION.cff`) and Zenodo.
 
 ### Accompanying paper
 
-Niels Hendrik Fliedner, Florian Klingler, Henning Trsek. "5GAutoConf: A Rapid Data-Driven Autoconfiguration Tool for 5G Base Stations" in *2026 22nd International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT)*, 2026.
+Niels Hendrik Fliedner, Florian Klingler, Henning Trsek, "5GAutoConf: A Rapid Data-Driven Autoconfiguration Tool for 5G Base Stations," *2026 22nd International Conference on Distributed Computing in Smart Systems and the Internet of Things (DCOSS-IoT)*, Reykjavik, Iceland, 2026, pp. 1325-1328
 
-DOI: https://doi.org/CONFERENCE_PAPER_DOI (will be added after archival release)
+DOI: https://doi.org/10.1109/DCOSS-IoT69657.2026.00197
 
 The author's version can be downloaded at [https://www.th-owl.de/elsa/record/13829](https://www.th-owl.de/elsa/record/13829) or [https://fklingler.net/bib/fliedner2026autoconf/](https://fklingler.net/bib/fliedner2026autoconf/).
 
