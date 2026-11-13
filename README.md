@@ -50,19 +50,19 @@ The following options are mainly used for the **Analysis Mode**, while some are 
 For synthesizing cell configuration parameters, 5GAutoConf automatically assumes a synthesis should be performed if any additional arguments (`kwargs`) are passed.
 In that case, no analysis of input arguments is performed.
 
-| Argument | Example Values | Minimum Value | Maximum Value | Description | Omission allowed? |
-| -------- | -------------- | ------------- | ------------- | ----------- | ----------------- |
-| `n` | `1.000293` | anything `>0` | Technically none, but it will distort all other parameters. | Refractive index of the medium. | No |
-| `r-cell` | `1900` | `0` | `14000` | Maximum gNB cell radius in meters. Maximum value defined by OAI5G due to missing implementation of 1250 kHz and 5000 kHz SCS for msg1. | No |
-| `ue-speed` | `27.78` | `0` | ca. `7800` | Maximum UE speed in m/s. Maximum speed partially depends on the maximum delay spread. | No |
-| `tau-d` | `15` | `0` | `66` | Maximum delay spread in microseconds. Maximum value defined by OAI5G due to missing implementation of 1250 kHz and 5000 kHz SCS for msg1. | No |
-| `x` | `1` | `1` | `16` | Used for $n_\text{f} \mod x = y$, where $n_\text{f}$ is the system frame number | Yes |
-| `y` | `0` | `0` | `2` | Used for $n_\text{f} \mod x = y$, where $n_\text{f}$ is the system frame number | Yes |
-| `subframe-number` | `9` | `1` | `39` | For `FR2` and `TDD`, this is actually the slot number. | Yes |
-| `starting-symbol` | `0` | `0` | `8` | Starting symbol | Yes |
-| `n-slot-ra` | `2` | `1` | `2` | Number of PRACH slots within a subframe / a 60 kHz slot | Yes |
-| `n-t-ra-slot` | `1` | `1` | `7` | Number of time-domain PRACH occasions within a PRACH slot | Yes |
-| `n-dur-ra` | `12` | `0` | `12` | PRACH occasion duration in symbols | Yes |
+| Argument          | Example Values | Minimum Value | Maximum Value                                               | Description                                                                                                                               | Omission allowed? |
+| ----------------- | -------------- | ------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `n`               | `1.000293`     | anything `>0` | Technically none, but it will distort all other parameters. | Refractive index of the medium.                                                                                                           | No                |
+| `r-cell`          | `1900`         | `0`           | `14000`                                                     | Maximum gNB cell radius in meters. Maximum value defined by OAI5G due to missing implementation of 1250 kHz and 5000 kHz SCS for msg1.    | No                |
+| `ue-speed`        | `27.78`        | `0`           | ca. `7800`                                                  | Maximum UE speed in m/s. Maximum speed partially depends on the maximum delay spread.                                                     | No                |
+| `tau-d`           | `15`           | `0`           | `66`                                                        | Maximum delay spread in microseconds. Maximum value defined by OAI5G due to missing implementation of 1250 kHz and 5000 kHz SCS for msg1. | No                |
+| `x`               | `1`            | `1`           | `16`                                                        | Used for $n_\text{f} \mod x = y$, where $n_\text{f}$ is the system frame number                                                           | Yes               |
+| `y`               | `0`            | `0`           | `2`                                                         | Used for $n_\text{f} \mod x = y$, where $n_\text{f}$ is the system frame number                                                           | Yes               |
+| `subframe-number` | `9`            | `1`           | `39`                                                        | For `FR2` and `TDD`, this is actually the slot number.                                                                                    | Yes               |
+| `starting-symbol` | `0`            | `0`           | `8`                                                         | Starting symbol                                                                                                                           | Yes               |
+| `n-slot-ra`       | `2`            | `1`           | `2`                                                         | Number of PRACH slots within a subframe / a 60 kHz slot                                                                                   | Yes               |
+| `n-t-ra-slot`     | `1`            | `1`           | `7`                                                         | Number of time-domain PRACH occasions within a PRACH slot                                                                                 | Yes               |
+| `n-dur-ra`        | `12`           | `0`           | `12`                                                        | PRACH occasion duration in symbols                                                                                                        | Yes               |
 
 ### Analysis Example
 
